@@ -6,18 +6,13 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
-import com.google.android.gms.location.GeofencingRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +24,15 @@ import java.util.List;
 public class GeofenceTransitionsIntentService extends IntentService {
     protected static final String TAG = GeofenceTransitionsIntentService.class.getName();
 
+    private static Trip trip;
+
+    static {
+        trip = new Trip();
+    }
+
     public GeofenceTransitionsIntentService() {
         super(TAG);
+
     }
 
     @Override
@@ -42,18 +44,50 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
 
         String description = getGeofenceTransitionDetails(event);
-        sendNotification(description);
+        Log.i(TAG, description);
     }
 
-    private static String getGeofenceTransitionDetails(GeofencingEvent event) {
-        String transitionString =
-                GeofenceStatusCodes.getStatusCodeString(event.getGeofenceTransition());
+    private String getGeofenceTransitionDetails(GeofencingEvent event) {
+        /*
+        TODO: Clean up method. Deal with Entry and Exit separately. No need for return here
+        TODO: Method can be void and will be called from onHandleIntent
+        */
+        if(event.hasError()){
+            Log.e(TAG, "Error");
+            Log.e(TAG, String.valueOf(event.getErrorCode()));
+        }
+
+        int geofenceTransition = event.getGeofenceTransition();
+
         List triggeringIDs = new ArrayList();
 
         for(Geofence geofence : event.getTriggeringGeofences()) {
             triggeringIDs.add(geofence.getRequestId());
+            if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+                addToPath(geofence);
+            }
         }
-        return String.format("%s: %s", transitionString, TextUtils.join(", ", triggeringIDs));
+
+        String geofenceWelcome = String.format("%s: %s", "Welcome to",
+                TextUtils.join(", ", triggeringIDs));
+
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+            sendNotification(geofenceWelcome);
+        }
+
+        return geofenceWelcome;
+    }
+
+    private static void addToPath(Geofence geofence) {
+        if(trip.isNewTrip()) {
+            trip.setStart(geofence);
+        } else {
+            trip.setEnd(geofence);
+            Log.i(TAG, "Trip: " + trip.getStart().getRequestId() + " to " +
+                                    trip.getEnd().getRequestId());
+            trip.resetTrip();
+        }
+
     }
 
     private void sendNotification(String notificationDetails) {

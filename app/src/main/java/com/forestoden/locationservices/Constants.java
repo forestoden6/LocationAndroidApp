@@ -1,5 +1,7 @@
 package com.forestoden.locationservices;
 
+import android.provider.Settings;
+
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -21,10 +23,11 @@ public class Constants {
     public static final HashMap<String, LatLng> LOCATIONS = new HashMap<>();
 
     static {
-        LOCATIONS.put("40th Street Station", new LatLng(39.957126, -75.201936));
         LOCATIONS.put("30th Street Station", new LatLng(39.954906, -75.183252));
+        LOCATIONS.put("40th Street Station", new LatLng(39.957126, -75.201936));
     }
 
+    public static String uuid = Settings.Secure.ANDROID_ID;
 
     private Constants() {
     }

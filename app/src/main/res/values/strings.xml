@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Location Services</string>
 
+    <!-- Notification Strings -->
+    <string name="welcome">Welcome to</string>
+
     <!-- Error strings -->
     <string name="not_connected">GoogleApiClient no yet connected. Try again.</string>
     <string name="geofence_not_available">Geofence service is not available now</string>

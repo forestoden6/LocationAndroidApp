@@ -1,6 +1,5 @@
 package com.forestoden.locationservices;
 
-import android.*;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -29,11 +27,7 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
-import org.w3c.dom.Text;
-
-import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements
@@ -79,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements
     protected synchronized void createGeofenceList(){
         for(Map.Entry<String, LatLng> entry : Constants.LOCATIONS.entrySet()) {
             mGeofenceList.add(new Geofence.Builder()
-                    .setRequestId("Geofence1")
+                    .setRequestId(entry.getKey())
                     .setCircularRegion(
                             entry.getValue().latitude,
                             entry.getValue().longitude,
@@ -105,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements
             ).setResultCallback(this);
         } catch (SecurityException securityException) {
             //Catch permission error
+            //Occurs when Location permission is not granted
         }
     }
 
