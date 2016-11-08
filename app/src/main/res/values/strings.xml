@@ -17,4 +17,17 @@
     <string name="geofence_transition_invalid_type">
         Geofence transition error: invalid transition type %1$d
     </string>
+    <string name="title_activity_home">"Public Transit "</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Nav Drawer (examples for now)-->
+    <string-array name="nav_options">
+        <item>Home</item>
+        <item>Map</item>
+        <item>Settings</item>
+    </string-array>
 </resources>
