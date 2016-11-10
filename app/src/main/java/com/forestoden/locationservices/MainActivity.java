@@ -34,8 +34,16 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import static com.forestoden.locationservices.Constants.LOCATIONS;
+import static com.forestoden.locationservices.Constants.stationUrlObject;
 
 public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener,
@@ -99,7 +107,11 @@ public class MainActivity extends AppCompatActivity implements
         mGeofenceList = new ArrayList<Geofence>();
         mGeofenceList = new ArrayList<>();
 
-        createGeofenceList();
+        try {
+            createGeofenceList();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         createGoogleApiClient();
     }
 
@@ -153,7 +165,38 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    protected void createGeofenceList(){
+    protected void createGeofenceList() throws JSONException {
+        /* TODO: Ask user for Internet permission at run time */
+
+        GetStationsTask stationConnection = new GetStationsTask();
+        String stations = null;
+        try {
+            stations = stationConnection.execute(stationUrlObject).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        if(stations != null){
+            JSONArray stationJson;
+
+            try {
+                stationJson = new JSONArray(stations);
+            } catch (Throwable t) {
+                Log.e(TAG, "Could not parse malformed JSON: " + stations);
+                return;
+            }
+
+            for(int i = 0; i < stationJson.length(); i++){
+                JSONObject station = stationJson.getJSONObject(i);
+                String name = (String) station.get("name");
+                double latitude = Double.parseDouble((String)station.get("latitude"));
+                double longitude = Double.parseDouble((String)station.get("longitude"));
+                LOCATIONS.put(name, new LatLng(latitude, longitude));
+            }
+        }
+
         for(Map.Entry<String, LatLng> entry : Constants.LOCATIONS.entrySet()) {
             mGeofenceList.add(new Geofence.Builder()
                     .setRequestId(entry.getKey())

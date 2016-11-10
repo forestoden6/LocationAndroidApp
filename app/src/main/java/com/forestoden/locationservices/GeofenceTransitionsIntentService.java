@@ -68,10 +68,16 @@ public class GeofenceTransitionsIntentService extends IntentService {
             }
         }
 
-        String geofenceWelcome = String.format("%s: %s", "Welcome to",
-                TextUtils.join(", ", triggeringIDs));
+        String geofenceWelcome = null;
 
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+            geofenceWelcome = String.format("%s: %s", "Welcome to",
+                    TextUtils.join(", ", triggeringIDs));
+            sendNotification(geofenceWelcome);
+        }
+        else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+            geofenceWelcome = String.format("%s: %s", "Exiting ",
+                    TextUtils.join(", ", triggeringIDs));
             sendNotification(geofenceWelcome);
         }
 

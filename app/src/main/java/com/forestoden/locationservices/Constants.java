@@ -5,26 +5,35 @@ import android.provider.Settings;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 
 /**
  * Created by ForestOden on 10/26/2016.
  */
-public class Constants {
+class Constants {
     private static Constants ourInstance = new Constants();
 
     public static Constants getInstance() {
         return ourInstance;
     }
 
-    public static final long GEOFENCE_EXPIRATION = Geofence.NEVER_EXPIRE;
-    public static final float GEOFENCE_RADIUS_METERS = 100;
+    static final long GEOFENCE_EXPIRATION = Geofence.NEVER_EXPIRE;
+    static final float GEOFENCE_RADIUS_METERS = 100;
 
-    public static final HashMap<String, LatLng> LOCATIONS = new HashMap<>();
+    static final String stationUrl =
+            "http://lowcost-env.r8dpz7s6b2.us-west-2.elasticbeanstalk.com/septa_stations.php";
+    static URL stationUrlObject;
+
+    static HashMap<String, LatLng> LOCATIONS = new HashMap<>();
 
     static {
-        LOCATIONS.put("30th Street Station", new LatLng(39.954906, -75.183252));
-        LOCATIONS.put("40th Street Station", new LatLng(39.957126, -75.201936));
+        try {
+            stationUrlObject = new URL(stationUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String uuid = Settings.Secure.ANDROID_ID;
