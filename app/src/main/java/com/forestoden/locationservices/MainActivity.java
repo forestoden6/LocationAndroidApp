@@ -39,10 +39,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static com.forestoden.locationservices.Constants.LOCATIONS;
+import static com.forestoden.locationservices.Constants.STATIONS;
 import static com.forestoden.locationservices.Constants.stationUrlObject;
 
 public class MainActivity extends AppCompatActivity implements
@@ -115,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements
         createGoogleApiClient();
     }
 
+    //Setup Navigation Drawer
     private void setupDrawer() {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.navigation_drawer_open,
@@ -165,9 +165,15 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    /*
+     * Creates the list of station locations obtained from the server
+     * Parses JSON returned by GetStationsTask
+     * Adds to HashMap
+     */
     protected void createGeofenceList() throws JSONException {
         /* TODO: Ask user for Internet permission at run time */
 
+        //Creates a new thread to get stations asynchronously
         GetStationsTask stationConnection = new GetStationsTask();
         String stations = null;
         try {
@@ -178,7 +184,9 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
+        //Parse JSON returned by server and add to list of stations
         if(stations != null){
+            Log.i(TAG, stations);
             JSONArray stationJson;
 
             try {
@@ -189,20 +197,25 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             for(int i = 0; i < stationJson.length(); i++){
-                JSONObject station = stationJson.getJSONObject(i);
-                String name = (String) station.get("name");
-                double latitude = Double.parseDouble((String)station.get("latitude"));
-                double longitude = Double.parseDouble((String)station.get("longitude"));
-                LOCATIONS.put(name, new LatLng(latitude, longitude));
+                JSONObject stationJsonObject = stationJson.getJSONObject(i);
+                String name = (String) stationJsonObject.get("name");
+                double latitude = Double.parseDouble((String)stationJsonObject.get("latitude"));
+                double longitude = Double.parseDouble((String)stationJsonObject.get("longitude"));
+                /* TODO: IDs and Address are placeholders for now. MUST ADD! */
+                Station station = new Station(0,1,name, "", new LatLng(latitude, longitude), 0);
+                STATIONS.add(station);
             }
         }
 
-        for(Map.Entry<String, LatLng> entry : Constants.LOCATIONS.entrySet()) {
+
+        //Create Geofence objects
+        //NOTE: Geofences will not be created here
+        for(Station station : STATIONS) {
             mGeofenceList.add(new Geofence.Builder()
-                    .setRequestId(entry.getKey())
+                    .setRequestId(station.getName())
                     .setCircularRegion(
-                            entry.getValue().latitude,
-                            entry.getValue().longitude,
+                            station.getLatLng().latitude,
+                            station.getLatLng().longitude,
                             Constants.GEOFENCE_RADIUS_METERS)
                     .setExpirationDuration(Constants.GEOFENCE_EXPIRATION)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER

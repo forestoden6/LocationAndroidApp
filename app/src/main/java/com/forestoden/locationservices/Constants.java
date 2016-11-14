@@ -3,11 +3,11 @@ package com.forestoden.locationservices;
 import android.provider.Settings;
 
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ForestOden on 10/26/2016.
@@ -22,11 +22,12 @@ class Constants {
     static final long GEOFENCE_EXPIRATION = Geofence.NEVER_EXPIRE;
     static final float GEOFENCE_RADIUS_METERS = 100;
 
-    static final String stationUrl =
+    private static final String stationUrl =
             "http://lowcost-env.r8dpz7s6b2.us-west-2.elasticbeanstalk.com/septa_stations.php";
     static URL stationUrlObject;
 
-    static HashMap<String, LatLng> LOCATIONS = new HashMap<>();
+    //static HashMap<String, LatLng> LOCATIONS = new HashMap<>();
+    static List<Station> STATIONS = new ArrayList<>();
 
     static {
         try {
@@ -35,6 +36,9 @@ class Constants {
             e.printStackTrace();
         }
     }
+
+    static final int SECONDS_PER_MINUTE = 60;
+    static final int TRIP_TIMEOUT = 5 * SECONDS_PER_MINUTE;
 
     public static String uuid = Settings.Secure.ANDROID_ID;
 
