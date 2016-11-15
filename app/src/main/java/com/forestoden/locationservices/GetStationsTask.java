@@ -2,6 +2,7 @@ package com.forestoden.locationservices;
 
 import android.os.AsyncTask;
 
+import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -44,13 +45,14 @@ public class GetStationsTask extends AsyncTask<URL, Integer, String> {
                     }
                 });
         //Use the URL passed to the method
-        GenericUrl genericStation = new GenericUrl(urls[0]);
+        GenericUrl genericStationURL = new GenericUrl(urls[0]);
         HttpRequest request;
-        //String stations = null;
         HttpResponse response;
         String stations = null;
         try {
-            request = requestFactory.buildGetRequest(genericStation);
+            //request = requestFactory.buildGetRequest(genericStation);
+            request = requestFactory.buildPostRequest(genericStationURL,
+                    ByteArrayContent.fromString("application/x-www-form-urlencoded", "type=all"));
             response = request.execute();
             stations = response.parseAsString();
 
