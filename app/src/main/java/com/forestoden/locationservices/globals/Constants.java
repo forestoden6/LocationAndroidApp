@@ -1,7 +1,8 @@
-package com.forestoden.locationservices;
+package com.forestoden.locationservices.globals;
 
 import android.provider.Settings;
 
+import com.forestoden.locationservices.model.Station;
 import com.google.android.gms.location.Geofence;
 
 import java.net.MalformedURLException;

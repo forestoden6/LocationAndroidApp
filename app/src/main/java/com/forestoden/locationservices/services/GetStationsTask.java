@@ -1,4 +1,4 @@
-package com.forestoden.locationservices;
+package com.forestoden.locationservices.services;
 
 import android.os.AsyncTask;
 

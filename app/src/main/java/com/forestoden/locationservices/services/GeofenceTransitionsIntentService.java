@@ -1,4 +1,4 @@
-package com.forestoden.locationservices;
+package com.forestoden.locationservices.services;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -11,6 +11,9 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.activities.MainActivity;
+import com.forestoden.locationservices.model.Trip;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 

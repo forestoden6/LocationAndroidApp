@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.forestoden.locationservices;
+package com.forestoden.locationservices.globals;
 
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.forestoden.locationservices.R;
 import com.google.android.gms.location.GeofenceStatusCodes;
 
 /**

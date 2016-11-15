@@ -1,4 +1,4 @@
-package com.forestoden.locationservices;
+package com.forestoden.locationservices.activities;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -23,6 +23,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.forestoden.locationservices.Constants;
+import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.globals.GeofenceErrorMessages;
+import com.forestoden.locationservices.model.Station;
+import com.forestoden.locationservices.services.GeofenceTransitionsIntentService;
+import com.forestoden.locationservices.services.GetStationsTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
