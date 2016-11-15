@@ -17,28 +17,28 @@ public class Trip {
 
     }
 
-    protected  boolean isNewTrip() {
+    public  boolean isNewTrip() {
         return newTrip;
     }
 
-    protected void setStart(Geofence geofence) {
+    public void setStart(Geofence geofence) {
         start = geofence;
         newTrip = false;
     }
 
-    protected void setEnd(Geofence geofence) {
+    public void setEnd(Geofence geofence) {
         end = geofence;
     }
 
-    protected Geofence getStart() {
+    public Geofence getStart() {
         return start;
     }
 
-    protected Geofence getEnd() {
+    public Geofence getEnd() {
         return end;
     }
 
-    protected void resetTrip() {
+    public void resetTrip() {
         setStart(null);
         setEnd(null);
         newTrip = true;

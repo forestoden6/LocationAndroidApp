@@ -16,7 +16,7 @@ public class Station {
     private LatLng latLng;
     private int lineID;
 
-    protected Station(int id1, int id2, String name, String address, LatLng latLng, int lineID) {
+    public Station(int id1, int id2, String name, String address, LatLng latLng, int lineID) {
         this.address = address;
         this.ID1 = id1;
         this.ID2 = id2;

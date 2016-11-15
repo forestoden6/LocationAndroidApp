@@ -23,8 +23,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.forestoden.locationservices.Constants;
 import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.globals.Constants;
 import com.forestoden.locationservices.globals.GeofenceErrorMessages;
 import com.forestoden.locationservices.model.Station;
 import com.forestoden.locationservices.services.GeofenceTransitionsIntentService;
@@ -44,11 +44,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import static com.forestoden.locationservices.Constants.STATIONS;
-import static com.forestoden.locationservices.Constants.stationUrlObject;
+import static com.forestoden.locationservices.globals.Constants.STATIONS;
+import static com.forestoden.locationservices.globals.Constants.stationUrl;
 
 public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener,
@@ -116,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements
             createGeofenceList();
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
         createGoogleApiClient();
     }
@@ -176,9 +180,10 @@ public class MainActivity extends AppCompatActivity implements
      * Parses JSON returned by GetStationsTask
      * Adds to HashMap
      */
-    protected void createGeofenceList() throws JSONException {
+    protected void createGeofenceList() throws JSONException, MalformedURLException {
         /* TODO: Ask user for Internet permission at run time */
 
+        URL stationUrlObject = new URL(stationUrl);
         //Creates a new thread to get stations asynchronously
         GetStationsTask stationConnection = new GetStationsTask();
         String stations = null;
