@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback,
         ResultCallback<Status> {
 
-    private static final int REQUEST_FINE_LOCATION= 0;
+    private static final int REQUEST_FINE_LOCATION = 0;
+    private static final int REQUEST_INTERNET = 1;
 
     private static final String TAG = "LocationServices";
 
@@ -181,17 +182,13 @@ public class MainActivity extends AppCompatActivity implements
      * Adds to HashMap
      */
     protected void createGeofenceList() throws JSONException, MalformedURLException {
-        /* TODO: Ask user for Internet permission at run time */
-
         URL stationUrlObject = new URL(stationUrl);
         //Creates a new thread to get stations asynchronously
         GetStationsTask stationConnection = new GetStationsTask();
         String stations = null;
         try {
             stations = stationConnection.execute(stationUrlObject).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException|ExecutionException e) {
             e.printStackTrace();
         }
 
@@ -271,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
                     status.getStatusCode());
+            Log.e(TAG, errorMessage);
         }
     }
 
@@ -331,12 +329,20 @@ public class MainActivity extends AppCompatActivity implements
                                            @NonNull int[] grantResults) {
         if (requestCode == REQUEST_FINE_LOCATION) {
             Log.i(TAG, "Received response for Location permission request.");
-
             if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i(TAG, "Location permission granted.");
                 Toast.makeText(this, "Permission granted", Toast.LENGTH_LONG).show();
             } else {
                 Log.i(TAG, "Location permission denied.");
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
+            }
+        } else if(requestCode == REQUEST_INTERNET) {
+            Log.i(TAG, "Received response for Internet permission request.");
+            if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Internet permission granted.");
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_LONG).show();
+            } else {
+                Log.i(TAG, "Internet permission denied.");
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
             }
         } else {

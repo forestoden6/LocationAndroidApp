@@ -13,11 +13,13 @@ import android.util.Log;
 
 import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.activities.MainActivity;
+import com.forestoden.locationservices.globals.Constants;
 import com.forestoden.locationservices.model.Trip;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +40,12 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     }
 
+    /**
+     * Intent was caused from Geofence Transition. Handler will get the transition details,
+     * i.e. did user enter or exit and the station name (requestID). A notification will be
+     * generated in the handling as well.
+     * @param intent Intent generated from Play Services when user interacted with geofence
+     */
     @Override
     protected void onHandleIntent(Intent intent) {
         GeofencingEvent event = GeofencingEvent.fromIntent(intent);
@@ -50,6 +58,12 @@ public class GeofenceTransitionsIntentService extends IntentService {
         Log.i(TAG, description);
     }
 
+    /**
+     * Extracts Information from Geofenceing Event. Adds station to user's trip and generates
+     * notification string.
+     * @param event GeofencingEvent that triggered intent
+     * @return String value with enter/exit info and Geofence request ID (station name)
+     */
     private String getGeofenceTransitionDetails(GeofencingEvent event) {
         /*
         TODO: Clean up method. Deal with Entry and Exit separately. No need for return here
@@ -64,10 +78,14 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
         List triggeringIDs = new ArrayList();
 
+        /*
+         * In theory, stations should far enough that only one Geofence is
+         * returned by getTriggeringGeofences()
+         */
         for(Geofence geofence : event.getTriggeringGeofences()) {
             triggeringIDs.add(geofence.getRequestId());
             if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-                addToPath(geofence);
+                addToTrip(geofence);
             }
         }
 
@@ -87,18 +105,34 @@ public class GeofenceTransitionsIntentService extends IntentService {
         return geofenceWelcome;
     }
 
-    private static void addToPath(Geofence geofence) {
+    /**
+     * Algorithm to determine user's trip.
+     * TODO: Determine if on Subway
+     * TODO: Trip object could get deleted. Refactor to store in SQLite or similar
+     * @param geofence Geofence that user  entered/exited
+     */
+    private static void addToTrip(Geofence geofence) {
+        Date currentTime = new Date();
         if(trip.isNewTrip()) {
-            trip.setStart(geofence);
+            trip.setStart(geofence, currentTime);
         } else {
-            trip.setEnd(geofence);
-            Log.i(TAG, "Trip: " + trip.getStart().getRequestId() + " to " +
-                                    trip.getEnd().getRequestId());
-            trip.resetTrip();
+            if(currentTime.getTime() - trip.getStartTime() < Constants.TRIP_TIMEOUT &&
+                    !geofence.getRequestId().equals(trip.getStart().getRequestId())) {
+                trip.setEnd(geofence, currentTime);
+                Log.i(TAG, "Trip: " + trip.getStart().getRequestId() + " to " +
+                        trip.getEnd().getRequestId() + ". Duration: " + trip.getTripDuration());
+                trip.resetTrip();
+            }
+
         }
 
     }
 
+    /**
+     * Sends notification to user when Geofence is entered or exited.
+     * Clicking notification returns user to app.
+     * @param notificationDetails Text to display in notification
+     */
     private void sendNotification(String notificationDetails) {
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
 

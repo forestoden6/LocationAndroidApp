@@ -27,15 +27,8 @@ public class Constants {
 
     public static List<Station> STATIONS = new ArrayList<>();
 
-    /*static {
-        try {
-            stationUrlObject = new URL(stationUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-    }*/
-
-    public static final int SECONDS_PER_MINUTE = 60;
+    private static final int MS_PER_SECOND = 1000;
+    private static final int SECONDS_PER_MINUTE = 60 * MS_PER_SECOND;
     public static final int TRIP_TIMEOUT = 5 * SECONDS_PER_MINUTE;
 
     public static String uuid = Settings.Secure.ANDROID_ID;
