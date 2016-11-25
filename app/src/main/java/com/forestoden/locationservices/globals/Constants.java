@@ -22,7 +22,8 @@ public class Constants {
     public static final float GEOFENCE_RADIUS_METERS = 100;
 
     public static final String stationUrl =
-            "http://lowcost-env.r8dpz7s6b2.us-west-2.elasticbeanstalk.com/septa_stations.php";
+            //"http://lowcost-env.r8dpz7s6b2.us-west-2.elasticbeanstalk.com/septa_stations.php";
+            "http://lowcost-env.r8dpz7s6b2.us-west-2.elasticbeanstalk.com/stations.php";
     //static URL stationUrlObject;
 
     public static List<Station> STATIONS = new ArrayList<>();

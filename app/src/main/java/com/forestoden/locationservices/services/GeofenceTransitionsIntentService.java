@@ -125,10 +125,10 @@ public class GeofenceTransitionsIntentService extends IntentService {
              * Otherwise trip is said to be completed and will be logged
              */
             if(currentTime.getTime() - trip.getStartTime() < Constants.TRIP_TIMEOUT &&
-                    !geofence.getRequestId().equals(trip.getStart().getRequestId()) &&
-                    !geofence.getRequestId().equals(trip.getEnd().getRequestId())) {
+                    !geofence.getRequestId().equals(trip.getStart().getRequestId()) /*&&
+                    !geofence.getRequestId().equals(trip.getEnd().getRequestId())*/) {
                 trip.setEnd(geofence, currentTime);
-            } else {
+            } else { //Currently will reset when user passes station again, want it to reset when time has expired
                 Log.i(TAG, "Trip: " + trip.getStart().getRequestId() + " to " +
                         trip.getEnd().getRequestId() + ". Duration: " + trip.getTripDuration());
                 trip.resetTrip();

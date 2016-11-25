@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements
             if(stationJson.length() > 0) {
                 for (int i = 0; i < stationJson.length(); i++) {
                     JSONObject stationJsonObject = stationJson.getJSONObject(i);
-                    String name = (String) stationJsonObject.get("proper_name");
+                    String name = (String) stationJsonObject.get("name_long");
                     double latitude = Double.parseDouble((String) stationJsonObject.get("latitude"));
                     double longitude = Double.parseDouble((String) stationJsonObject.get("longitude"));
                     /* TODO: IDs and Address are placeholders for now. MUST ADD! */
