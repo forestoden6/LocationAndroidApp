@@ -116,9 +116,19 @@ public class GeofenceTransitionsIntentService extends IntentService {
         if(trip.isNewTrip()) {
             trip.setStart(geofence, currentTime);
         } else {
+            //Timeout to finalize trip.
+            //If new station is reached before timeout, it will become new end
+            /**
+             * End Trip Logic
+             * If new geofence is within time limit and different geofence from start or end
+             * set as new end
+             * Otherwise trip is said to be completed and will be logged
+             */
             if(currentTime.getTime() - trip.getStartTime() < Constants.TRIP_TIMEOUT &&
-                    !geofence.getRequestId().equals(trip.getStart().getRequestId())) {
+                    !geofence.getRequestId().equals(trip.getStart().getRequestId()) &&
+                    !geofence.getRequestId().equals(trip.getEnd().getRequestId())) {
                 trip.setEnd(geofence, currentTime);
+            } else {
                 Log.i(TAG, "Trip: " + trip.getStart().getRequestId() + " to " +
                         trip.getEnd().getRequestId() + ". Duration: " + trip.getTripDuration());
                 trip.resetTrip();

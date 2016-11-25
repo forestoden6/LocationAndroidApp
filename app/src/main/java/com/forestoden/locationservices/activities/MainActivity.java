@@ -194,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements
 
         //Parse JSON returned by server and add to list of stations
         if(stations != null){
-            Log.i(TAG, stations);
             JSONArray stationJson;
 
             try {
@@ -204,15 +203,23 @@ public class MainActivity extends AppCompatActivity implements
                 return;
             }
 
-            for(int i = 0; i < stationJson.length(); i++){
-                JSONObject stationJsonObject = stationJson.getJSONObject(i);
-                String name = (String) stationJsonObject.get("proper_name");
-                double latitude = Double.parseDouble((String)stationJsonObject.get("latitude"));
-                double longitude = Double.parseDouble((String)stationJsonObject.get("longitude"));
-                /* TODO: IDs and Address are placeholders for now. MUST ADD! */
-                Station station = new Station(0,1,name, "", new LatLng(latitude, longitude), 0);
-                STATIONS.add(station);
+            if(stationJson.length() > 0) {
+                for (int i = 0; i < stationJson.length(); i++) {
+                    JSONObject stationJsonObject = stationJson.getJSONObject(i);
+                    String name = (String) stationJsonObject.get("proper_name");
+                    double latitude = Double.parseDouble((String) stationJsonObject.get("latitude"));
+                    double longitude = Double.parseDouble((String) stationJsonObject.get("longitude"));
+                    /* TODO: IDs and Address are placeholders for now. MUST ADD! */
+                    Station station = new Station(0, 1, name, "", new LatLng(latitude, longitude), 0);
+                    STATIONS.add(station);
+                }
+            } else {
+                Log.e(TAG, "Empty JSON returned by server");
+                Toast.makeText(this, "Error connecting to server", Toast.LENGTH_LONG).show();
             }
+        } else {
+            Log.e(TAG, "No response from server");
+            Toast.makeText(this, "Could not connect to server", Toast.LENGTH_LONG).show();
         }
 
 
