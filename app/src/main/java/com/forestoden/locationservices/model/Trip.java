@@ -1,5 +1,8 @@
 package com.forestoden.locationservices.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.google.android.gms.location.Geofence;
 
 import java.util.Date;
@@ -28,10 +31,17 @@ public class Trip {
 
     //TODO: Decide on how to store dates
     //Probably change how times are stored
-    public void setStart(Geofence geofence, Date date) {
+    public void setStart(Geofence geofence, Date date, Context mContext) {
         start = geofence;
         startDate = date;
         newTrip = false;
+        SharedPreferences tripSharedPref = mContext.getSharedPreferences("Start",
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = tripSharedPref.edit();
+        editor.putBoolean("New Trip", newTrip);
+        editor.putString("Station", geofence.getRequestId());
+        editor.putString("Time", date.toString());
+        editor.commit();
     }
 
     public void setEnd(Geofence geofence, Date date) {

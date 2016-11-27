@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
@@ -111,10 +112,13 @@ public class GeofenceTransitionsIntentService extends IntentService {
      * TODO: Trip object could get deleted. Refactor to store in SQLite or similar
      * @param geofence Geofence that user  entered/exited
      */
-    private static void addToTrip(Geofence geofence) {
+    private void addToTrip(Geofence geofence) {
         Date currentTime = new Date();
         if(trip.isNewTrip()) {
-            trip.setStart(geofence, currentTime);
+            trip.setStart(geofence, currentTime, getApplicationContext());
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Start",
+                    Context.MODE_PRIVATE);
+            Log.i(TAG, "SHARED PREF " + sharedPref.getString("Station", "null"));
         } else {
             //Timeout to finalize trip.
             //If new station is reached before timeout, it will become new end
