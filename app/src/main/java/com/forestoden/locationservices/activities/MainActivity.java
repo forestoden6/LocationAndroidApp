@@ -9,6 +9,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.fragments.Mapfragment;
 import com.forestoden.locationservices.globals.Constants;
 import com.forestoden.locationservices.globals.GeofenceErrorMessages;
 import com.forestoden.locationservices.model.Station;
@@ -93,17 +96,21 @@ public class MainActivity extends AppCompatActivity implements
 
         mActivityTitle = getTitle().toString();
 
+
         //Set adapter to the drawer options
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mDrawerOptions));
 
         //Set click listener to get menu selection
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                Toast.makeText(MainActivity.this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
-            }
-        });
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+//        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+//        {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
+//                Toast.makeText(MainActivity.this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        );
 
         //Hamburger Menu
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -124,6 +131,51 @@ public class MainActivity extends AppCompatActivity implements
         }
         createGoogleApiClient();
     }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+    private void selectItem(int position){
+        switch(position) {
+            case 0:
+                Toast.makeText(MainActivity.this, "This should be home!", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                FragmentManager manager = getSupportFragmentManager();
+                Fragment fragment = manager.findFragmentById(R.id.fragment_container);
+
+                if (fragment == null){
+                    fragment = new Mapfragment();
+                    manager.beginTransaction().add(R.id.fragment_container, fragment).commit();
+                }
+
+                Toast.makeText(MainActivity.this, "This should be a map!", Toast.LENGTH_SHORT).show();
+                break;
+            case 2:
+                Toast.makeText(MainActivity.this, "This should be settings!", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+        }
+
+
+        }
+//        Fragment fragement = new Mapfragment();
+//        Bundle args = new Bundle();
+//        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+//        fragement.setArguments(args);
+//
+//        FragmentManager fragmentManager = getFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+//
+//        mDrawerList.setItemChecked(position, true);
+//        mDrawerLayout.closeDrawer(mDrawerList);
+//
+
+
 
     //Setup Navigation Drawer
     private void setupDrawer() {
