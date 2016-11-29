@@ -28,6 +28,10 @@ public class Constants {
 
     public static List<Station> STATIONS = new ArrayList<>();
 
+    public List<Station> getStationLocations(){
+        return STATIONS;
+    }
+
     private static final int MS_PER_SECOND = 1000;
     private static final int SECONDS_PER_MINUTE = 60 * MS_PER_SECOND;
     public static final int TRIP_TIMEOUT = 5 * SECONDS_PER_MINUTE;

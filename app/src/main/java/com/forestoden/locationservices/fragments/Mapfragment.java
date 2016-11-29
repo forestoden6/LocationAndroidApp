@@ -15,6 +15,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.globals.Constants;
+import com.forestoden.locationservices.model.Station;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -118,24 +120,25 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
 
         }
         // TODO: Check if we still want to use ZIPCODE
-        //updateMapForStations(19104);
+        updateMapForStations(19104);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
 
     }
 
-//    private void updateMapForStations(int zipcode){
-//
-//        ArrayList<Stations> locations = DataService.getInstance().getStationLocations(zipcode);
-//
-//        for( int x = 0; x < locations.size(); x++){
-//            Stations loc = locations.get(x);
-//            MarkerOptions marker = new MarkerOptions().position(new LatLng(loc.getLatitude(),loc.getLongitude()));
-//            marker.title(loc.getLocationName());
-//            marker.snippet(loc.getLocationAddress());
-//            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin));
-//            mMap.addMarker(marker);
-//        }
-//    }
+    private void updateMapForStations(int zipcode){
+
+        List<Station> locations = Constants.getInstance().getStationLocations();
+
+        for( int x = 0; x < locations.size(); x++){
+            Station loc = locations.get(x);
+            MarkerOptions marker = new MarkerOptions().position(loc.getLatLng());
+            marker.title(loc.getName());
+            marker.snippet(loc.getAddress());
+            marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            //marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin));
+            mMap.addMarker(marker);
+        }
+    }
 
 
 
