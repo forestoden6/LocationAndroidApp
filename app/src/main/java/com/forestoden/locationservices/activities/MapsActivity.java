@@ -31,10 +31,13 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
     private GoogleApiClient mGoogleApiClient;
     private Mapfragment Mapfragment;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        //setContentView(R.layout.activity_maps);
+
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)

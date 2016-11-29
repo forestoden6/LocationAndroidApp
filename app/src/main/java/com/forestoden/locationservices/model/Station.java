@@ -1,5 +1,7 @@
 package com.forestoden.locationservices.model;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -23,6 +25,7 @@ public class Station {
         this.name = name;
         this.latLng = latLng;
         this.lineID = lineID;
+
     }
 
     public int getID1() {

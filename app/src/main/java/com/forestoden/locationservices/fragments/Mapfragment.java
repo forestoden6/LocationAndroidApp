@@ -124,6 +124,7 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
     }
 
 //    private void updateMapForStations(int zipcode){
+//
 //        ArrayList<Stations> locations = DataService.getInstance().getStationLocations(zipcode);
 //
 //        for( int x = 0; x < locations.size(); x++){

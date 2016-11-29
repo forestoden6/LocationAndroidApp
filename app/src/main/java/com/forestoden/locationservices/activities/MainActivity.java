@@ -40,6 +40,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -56,7 +58,7 @@ import static com.forestoden.locationservices.globals.Constants.STATIONS;
 import static com.forestoden.locationservices.globals.Constants.stationUrl;
 
 public class MainActivity extends AppCompatActivity implements
-        ConnectionCallbacks, OnConnectionFailedListener,
+        ConnectionCallbacks, OnConnectionFailedListener, LocationListener,
         ActivityCompat.OnRequestPermissionsResultCallback,
         ResultCallback<Status> {
 
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements
     protected Location mLocation;
 
     protected ArrayList<Geofence> mGeofenceList;
+
+    private Mapfragment Mapfragment;
 
     protected static final String mLatitudeLabel = "Latitude";
     protected static final String mLongitudeLabel = "Longitude";
@@ -93,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerOptions = getResources().getStringArray(R.array.nav_options);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
         mActivityTitle = getTitle().toString();
 
 
@@ -116,6 +119,16 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         setupDrawer();
+
+        Mapfragment = (Mapfragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        if (Mapfragment == null) {
+            Mapfragment = Mapfragment.newInstance();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_container, Mapfragment)
+                    .commit();
+        }
 
         mLatitudeText = (TextView) findViewById(R.id.latitude_text);
         mLongitudeText = (TextView) findViewById(R.id.longitude_text);
@@ -145,6 +158,9 @@ public class MainActivity extends AppCompatActivity implements
                 Toast.makeText(MainActivity.this, "This should be home!", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
+                //Intent MapIntent = new Intent(MainActivity.this, MapsActivity.class);
+                //startActivity(MapIntent);
+
                 FragmentManager manager = getSupportFragmentManager();
                 Fragment fragment = manager.findFragmentById(R.id.fragment_container);
 
@@ -226,6 +242,12 @@ public class MainActivity extends AppCompatActivity implements
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.v("DONKEY", "Long:" + location.getLongitude() + "Lat:" + location.getLatitude());
+        Mapfragment.setUserMarker(new LatLng(location.getLatitude(),location.getLongitude()));
     }
 
     /*
@@ -370,6 +392,22 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             Toast.makeText(this, "No location detected", Toast.LENGTH_LONG).show();
         }
+        startLocationServices();
+    }
+
+    public void startLocationServices(){
+        Log.v("DONKEY", "Starting Location Services Called");
+
+        try {
+            LocationRequest req = LocationRequest.create().setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, req, this);
+            Log.v("DONKEY", "Requesting location updates");
+        }
+        catch (SecurityException exception) {
+            //Show dialog to user saying we can't get location unless they give app permission
+            Log.v("DONKEY", exception.toString());
+        }
+
     }
 
     @Override
