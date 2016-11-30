@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.v("DONKEY", "Long:" + location.getLongitude() + "Lat:" + location.getLatitude());
+        Log.v(TAG, "Long:" + location.getLongitude() + "Lat:" + location.getLatitude());
         Mapfragment.setUserMarker(new LatLng(location.getLatitude(),location.getLongitude()));
     }
 
@@ -396,16 +396,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void startLocationServices(){
-        Log.v("DONKEY", "Starting Location Services Called");
+        Log.v(TAG, "Starting Location Services Called");
 
         try {
             LocationRequest req = LocationRequest.create().setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, req, this);
-            Log.v("DONKEY", "Requesting location updates");
+            Log.v(TAG, "Requesting location updates");
         }
         catch (SecurityException exception) {
             //Show dialog to user saying we can't get location unless they give app permission
-            Log.v("DONKEY", exception.toString());
+            Log.v(TAG, exception.toString());
         }
 
     }

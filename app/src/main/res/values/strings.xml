@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Location Services</string>
+    <string name="app_name">Public Transit App</string>
 
     <!-- Notification Strings -->
     <string name="welcome">Welcome to</string>
