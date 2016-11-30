@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REQUEST_FINE_LOCATION = 0;
     private static final int REQUEST_INTERNET = 1;
 
-    private static final String TAG = "LocationServices";
+    private static final String TAG = MainActivity.class.getName();
 
     protected GoogleApiClient mGoogleApiClient;
 
@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
         createGoogleApiClient();
     }
 
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements
                 super.onDrawerOpened(drawerView);
                 getSupportActionBar().setTitle("Navigation Drawer");
                 invalidateOptionsMenu();
+                createGeofences();
             }
 
             /** Called when drawer has been fully closed */
@@ -222,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if(id == R.id.action_settings) {
+
             return true;
         }
 
@@ -313,12 +316,13 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void addGeofencesButtonHandler(View view){
+    //public void addGeofencesButtonHandler(View view){
+    public void createGeofences() {
         if(!mGoogleApiClient.isConnected()) {
             Toast.makeText(this, "Google API Client not connected!", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        //Toast.makeText(this, "Test", Toast.LENGTH_LONG).show();
         try {
             LocationServices.GeofencingApi.addGeofences(
                     mGoogleApiClient,
@@ -357,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+
     }
 
     @Override
