@@ -3,7 +3,6 @@ package com.forestoden.locationservices.fragments;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -26,14 +25,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-
 
 public class Mapfragment extends Fragment implements OnMapReadyCallback {
+
+    private static final String TAG = Mapfragment.class.getName();
+
 
     private GoogleMap mMap;
     private MarkerOptions userMarker;
@@ -106,13 +105,14 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
         if (userMarker == null){
             userMarker = new MarkerOptions().position(latlng).title("Current Location");
             mMap.addMarker(userMarker);
-            Log.v("DONKEY", "Current Location:" + latlng.latitude + " long:" + latlng.longitude);
+            Log.v(TAG, "Current Location:" + latlng.latitude + " long:" + latlng.longitude);
         }
 
         try {
             Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(latlng.latitude, latlng.longitude, 1);
-            int zip = Integer.parseInt(addresses.get(0).getPostalCode());
+            //This line is causing a NumberFormatException: null error. Needs to be fixed
+            //int zip = Integer.parseInt(addresses.get(0).getPostalCode());
             // TODO: Check if we still want to use ZIPCODE
             //updateMapForStations(zip);
         }

@@ -204,6 +204,8 @@ public class MainActivity extends AppCompatActivity implements
                 super.onDrawerOpened(drawerView);
                 getSupportActionBar().setTitle("Navigation Drawer");
                 invalidateOptionsMenu();
+                //TODO: Make this create at start
+                //Google API says its not connected
                 createGeofences();
             }
 

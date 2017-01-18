@@ -108,8 +108,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     /**
      * Algorithm to determine user's trip.
-     * TODO: Determine if on Subway
-     * TODO: Trip object could get deleted. Refactor to store in SQLite or similar
+     * TODO: Determine if on Subway, including multiple stops
      * @param geofence Geofence that user  entered/exited
      */
     private void addToTrip(Geofence geofence) {
@@ -128,11 +127,12 @@ public class GeofenceTransitionsIntentService extends IntentService {
              * set as new end
              * Otherwise trip is said to be completed and will be logged
              */
-            if(currentTime.getTime() - trip.getStartTime() < Constants.TRIP_TIMEOUT &&
-                    !geofence.getRequestId().equals(trip.getStart().getRequestId()) /*&&
-                    !geofence.getRequestId().equals(trip.getEnd().getRequestId())*/) {
+            //If trip time > TRIP_TIMEOUT, this will not accurately read
+            if(trip.getEnd() == null) { trip.setEnd(geofence, currentTime); }
+            else if(currentTime.getTime() - trip.getEndTime() < Constants.TRIP_TIMEOUT &&
+                    !geofence.getRequestId().equals(trip.getStart().getRequestId())) {
                 trip.setEnd(geofence, currentTime);
-            } else { //Currently will reset when user passes station again, want it to reset when time has expired
+            } else { //TODO: Currently will reset when user passes station again, want it to reset when time has expired
                 Log.i(TAG, "Trip: " + trip.getStart().getRequestId() + " to " +
                         trip.getEnd().getRequestId() + ". Duration: " + trip.getTripDuration());
                 trip.resetTrip();
