@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -115,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements
 //        }
 //        );
 
+        createGoogleApiClient();
+
         //Hamburger Menu
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -142,8 +145,6 @@ public class MainActivity extends AppCompatActivity implements
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
-        createGoogleApiClient();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements
                 invalidateOptionsMenu();
                 //TODO: Make this create at start
                 //Google API says its not connected
-                createGeofences();
+                //createGeofences();
             }
 
             /** Called when drawer has been fully closed */
@@ -319,11 +320,23 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     //public void addGeofencesButtonHandler(View view){
+
+    /**
+     * Removed this method and integrated functionality into onStart()
+     * We are using a ConnectionCallback to create the geofences when the GoogleApiClient is connected
+     * and this functionality was migrated to onConnected.
+
     public void createGeofences() {
-        if(!mGoogleApiClient.isConnected()) {
-            Toast.makeText(this, "Google API Client not connected!", Toast.LENGTH_SHORT).show();
-            return;
+        Log.i(TAG, String.valueOf(mGoogleApiClient.isConnected()));
+        if(mGoogleApiClient.isConnecting()){
+            Toast.makeText(this, "Connecting to Google API Client.", Toast.LENGTH_SHORT).show();
         }
+        if(!mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+            Toast.makeText(this, "Google API Client not connected!", Toast.LENGTH_SHORT).show();
+            //return;
+        }
+        Log.i(TAG, String.valueOf(mGoogleApiClient.isConnected()));
         //Toast.makeText(this, "Test", Toast.LENGTH_LONG).show();
         try {
             LocationServices.GeofencingApi.addGeofences(
@@ -336,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements
             //Occurs when Location permission is not granted
         }
     }
+     */
 
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
@@ -363,16 +377,44 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+        //Waits for async connection to complete, then initializes Geofences
+        mGoogleApiClient.registerConnectionCallbacks(new ConnectionCallbacks() {
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
+                try {
+                    LocationServices.GeofencingApi.addGeofences(
+                            mGoogleApiClient,
+                            getGeofencingRequest(),
+                            getGeofencePendingIntent()
+                    );
+                } catch (SecurityException securityException) {
+                    //Catch permission error
+                    //Occurs when Location permission is not granted
+                } finally {
+                    Log.i(MainActivity.TAG, "Geofences added");
+                }
+            }
 
+            @Override
+            public void onConnectionSuspended(int i) {
+
+            }
+        });
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        //createGeofences();
+    }
+
+    /*@Override
     protected void onStop() {
         super.onStop();
         if(mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
-    }
+    }*/
 
     protected synchronized void createGoogleApiClient(){
         mGoogleApiClient = new GoogleApiClient.Builder(this)
