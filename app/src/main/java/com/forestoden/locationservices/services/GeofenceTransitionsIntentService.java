@@ -14,7 +14,6 @@ import android.util.Log;
 
 import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.activities.MainActivity;
-import com.forestoden.locationservices.globals.Constants;
 import com.forestoden.locationservices.model.Trip;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
@@ -22,6 +21,9 @@ import com.google.android.gms.location.GeofencingEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+
+import static com.forestoden.locationservices.globals.Constants.TRIP_TIMEOUT;
 
 /**
  * Created by ForestOden on 10/26/2016.
@@ -30,7 +32,9 @@ import java.util.List;
 public class GeofenceTransitionsIntentService extends IntentService {
     protected static final String TAG = GeofenceTransitionsIntentService.class.getName();
 
-    private static Trip trip;
+    public static Trip trip;
+    public static Timer tripTimer = new Timer();
+    public CompletedTripTask tripTimerTask = new CompletedTripTask();
 
     static {
         trip = new Trip();
@@ -108,8 +112,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     /**
      * Algorithm to determine user's trip.
-     * TODO: Determine if on Subway, including multiple stops
-     * @param geofence Geofence that user  entered/exited
+     * @param geofence Geofence that user entered/exited
      */
     private void addToTrip(Geofence geofence) {
         Date currentTime = new Date();
@@ -127,16 +130,32 @@ public class GeofenceTransitionsIntentService extends IntentService {
              * set as new end
              * Otherwise trip is said to be completed and will be logged
              */
-            //If trip time > TRIP_TIMEOUT, this will not accurately read
-            if(trip.getEnd() == null) { trip.setEnd(geofence, currentTime); }
-            else if(currentTime.getTime() - trip.getEndTime() < Constants.TRIP_TIMEOUT &&
+            //If time between geofences > TRIP_TIMEOUT, this will not accurately read
+            Log.d(TAG, "TEST");
+            if(trip.getEnd() == null) {
+                trip.setEnd(geofence, currentTime);
+                tripTimer.schedule(tripTimerTask, TRIP_TIMEOUT);
+            }
+            else if(//tripTimerTask.cancel() &&
+                    !geofence.getRequestId().equals(trip.getStart().getRequestId())) {
+                Log.d(TAG, "Added to trip");
+                trip.setEnd(geofence, currentTime);
+                //Seems like the timer isn't being cancelled
+                tripTimerTask.cancel();
+                //Don't know if this must be cancelled, as the new call to schedule() might reset
+                //tripTimerTask.purge();
+                tripTimerTask = new CompletedTripTask();
+                tripTimer.schedule(tripTimerTask, TRIP_TIMEOUT);
+            }
+            /*else if(currentTime.getTime() - trip.getEndTime() < Constants.TRIP_TIMEOUT &&
                     !geofence.getRequestId().equals(trip.getStart().getRequestId())) {
                 trip.setEnd(geofence, currentTime);
-            } else { //TODO: Currently will reset when user passes station again, want it to reset when time has expired
+            } else {
                 Log.i(TAG, "Trip: " + trip.getStart().getRequestId() + " to " +
                         trip.getEnd().getRequestId() + ". Duration: " + trip.getTripDuration());
                 trip.resetTrip();
-            }
+            }*/
+
 
         }
 

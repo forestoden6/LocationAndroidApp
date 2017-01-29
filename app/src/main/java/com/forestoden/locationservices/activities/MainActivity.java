@@ -140,9 +140,7 @@ public class MainActivity extends AppCompatActivity implements
 
         try {
             createGeofenceList();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -205,9 +203,6 @@ public class MainActivity extends AppCompatActivity implements
                 super.onDrawerOpened(drawerView);
                 getSupportActionBar().setTitle("Navigation Drawer");
                 invalidateOptionsMenu();
-                //TODO: Make this create at start
-                //Google API says its not connected
-                //createGeofences();
             }
 
             /** Called when drawer has been fully closed */
@@ -390,6 +385,7 @@ public class MainActivity extends AppCompatActivity implements
                 } catch (SecurityException securityException) {
                     //Catch permission error
                     //Occurs when Location permission is not granted
+                    Log.e(TAG, "Location Permission not granted!");
                 } finally {
                     Log.i(MainActivity.TAG, "Geofences added");
                 }
@@ -397,7 +393,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onConnectionSuspended(int i) {
-
+                //Do nothing. Geofences should stay added
             }
         });
     }

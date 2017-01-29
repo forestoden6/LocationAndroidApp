@@ -18,12 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener {
 
@@ -31,7 +26,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
     private GoogleApiClient mGoogleApiClient;
     private Mapfragment Mapfragment;
 
-
+    private static final String TAG = MapsActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +60,10 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
     public void onConnected(@Nullable Bundle bundle) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
-            Log.v("DONKEY", "Requesting permissions");
+            Log.v(TAG, "Requesting permissions");
         }
         else{
-            Log.v("DONKEY", "Starting location services from onConnected");
+            Log.v(TAG, "Starting location services from onConnected");
             startLocationServices();
         }
     }
@@ -81,7 +76,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.v("DONKEY", "Long:" + location.getLongitude() + "Lat:" + location.getLatitude());
+        Log.v(TAG, "Long:" + location.getLongitude() + "Lat:" + location.getLatitude());
         Mapfragment.setUserMarker(new LatLng(location.getLatitude(),location.getLongitude()));
     }
 
@@ -93,7 +88,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
 
     @Override
     protected void onStop() {
-        //Stopps the app from running in the background, we probabaly want to change this
+        //Stops the app from running in the background, we probably want to change this
         mGoogleApiClient.disconnect();
         super.onStop();
     }
