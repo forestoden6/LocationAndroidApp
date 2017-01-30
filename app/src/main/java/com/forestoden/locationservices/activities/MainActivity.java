@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.fragments.Mapfragment;
+import com.forestoden.locationservices.fragments.ScheduleFragment;
 import com.forestoden.locationservices.globals.Constants;
 import com.forestoden.locationservices.globals.GeofenceErrorMessages;
 import com.forestoden.locationservices.model.Station;
@@ -61,7 +62,9 @@ import static com.forestoden.locationservices.globals.Constants.stationUrl;
 public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener,
         ActivityCompat.OnRequestPermissionsResultCallback,
-        ResultCallback<Status> {
+        ResultCallback<Status>,
+        ScheduleFragment.OnFragmentInteractionListener,
+        Mapfragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_FINE_LOCATION = 0;
     private static final int REQUEST_INTERNET = 1;
@@ -145,6 +148,11 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        //This can be empty unless we need to communicate between fragments.
+    }
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -153,25 +161,52 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void selectItem(int position){
+        //TODO: Want to refactor for 5.0 Menu maybe, how to keep backwards compat?
+        Fragment fragment = null;
+        FragmentManager fragmentManager = getSupportFragmentManager();
         switch(position) {
             case 0:
                 Toast.makeText(MainActivity.this, "This should be home!", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
-                //Intent MapIntent = new Intent(MainActivity.this, MapsActivity.class);
-                //startActivity(MapIntent);
+                try {
+                    fragment = (Fragment) Mapfragment.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                FragmentManager manager = getSupportFragmentManager();
-                Fragment fragment = manager.findFragmentById(R.id.fragment_container);
+                fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                        .commit();
+
+                int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+                if(permissionCheck != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+                }
+                mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                Mapfragment.setUserMarker(new LatLng(mLocation.getLatitude(),mLocation.getLongitude()));
+
+
+                //Mapfragment.setUserMarker(new LatLng(location.getLatitude(),location.getLongitude()));
+                /*fragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
                 if (fragment == null){
                     fragment = new Mapfragment();
-                    manager.beginTransaction().add(R.id.fragment_container, fragment).commit();
-                }
+                    fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
+                }*/
 
                 Toast.makeText(MainActivity.this, "This should be a map!", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
+                try {
+                    fragment = (Fragment) ScheduleFragment.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                        .commit();
+            case 3:
                 Toast.makeText(MainActivity.this, "This should be settings!", Toast.LENGTH_SHORT).show();
                 break;
             default:
@@ -372,30 +407,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
-        //Waits for async connection to complete, then initializes Geofences
-        mGoogleApiClient.registerConnectionCallbacks(new ConnectionCallbacks() {
-            @Override
-            public void onConnected(@Nullable Bundle bundle) {
-                try {
-                    LocationServices.GeofencingApi.addGeofences(
-                            mGoogleApiClient,
-                            getGeofencingRequest(),
-                            getGeofencePendingIntent()
-                    );
-                } catch (SecurityException securityException) {
-                    //Catch permission error
-                    //Occurs when Location permission is not granted
-                    Log.e(TAG, "Location Permission not granted!");
-                } finally {
-                    Log.i(MainActivity.TAG, "Geofences added");
-                }
-            }
 
-            @Override
-            public void onConnectionSuspended(int i) {
-                //Do nothing. Geofences should stay added
-            }
-        });
     }
 
     @Override
@@ -430,13 +442,28 @@ public class MainActivity extends AppCompatActivity implements
         Log.i(TAG, String.valueOf(mGoogleApiClient.isConnected()));
         Log.i(TAG, "Permission granted: " + String.valueOf(permissionCheck));
         if(mLocation != null) {
-            mLatitudeText.setText(String.format("%s: %f", mLatitudeLabel,
+            /*mLatitudeText.setText(String.format("%s: %f", mLatitudeLabel,
                     mLocation.getLatitude()));
             mLongitudeText.setText(String.format("%s: %f", mLongitudeLabel,
-                    mLocation.getLongitude()));
+                    mLocation.getLongitude()));*/
         } else {
             Toast.makeText(this, "No location detected", Toast.LENGTH_LONG).show();
         }
+
+        try {
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    getGeofencingRequest(),
+                    getGeofencePendingIntent()
+            );
+        } catch (SecurityException securityException) {
+            //Catch permission error
+            //Occurs when Location permission is not granted
+            Log.e(TAG, "Location Permission not granted!");
+        } finally {
+            Log.i(MainActivity.TAG, "Geofences added");
+        }
+
         startLocationServices();
     }
 

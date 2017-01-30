@@ -1,8 +1,10 @@
 package com.forestoden.locationservices.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -36,6 +38,8 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private MarkerOptions userMarker;
+
+    private Context mContext;
 
 
     public Mapfragment() {
@@ -88,6 +92,18 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        Activity activity;
+
+        if(context instanceof Activity){
+            activity = (Activity) context;
+        }
+
+        mContext = context;
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -109,9 +125,10 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
         }
 
         try {
-            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+            //Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+            Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(latlng.latitude, latlng.longitude, 1);
-            //This line is causing a NumberFormatException: null error. Needs to be fixed
+            //TODO: This line is causing a NumberFormatException: null error. Needs to be fixed
             //int zip = Integer.parseInt(addresses.get(0).getPostalCode());
             // TODO: Check if we still want to use ZIPCODE
             //updateMapForStations(zip);
@@ -140,10 +157,18 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-
-
-
-
-
-
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
 }

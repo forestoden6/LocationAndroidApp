@@ -28,6 +28,7 @@
     <string-array name="nav_options">
         <item>Home</item>
         <item>Map</item>
+        <item>Schedule</item>
         <item>Settings</item>
     </string-array>
 
