@@ -26,6 +26,7 @@ class CompletedTripTask extends TimerTask {
                 trip.getEnd().getRequestId() + ". Duration: " + trip.getTripDuration());
         trip.resetTrip();
         //TODO: Implement API calls to save
+        //Will Create new class that extends ASyncTask, StoreCompletedTripTask
         //Reset hasRun to allow for new trip
         //hasRun = false;
     }

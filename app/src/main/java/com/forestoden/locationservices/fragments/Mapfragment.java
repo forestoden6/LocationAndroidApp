@@ -41,6 +41,7 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
 
     private Context mContext;
 
+    private double mLat, mLong;
 
     public Mapfragment() {
         // Required empty public constructor
@@ -56,6 +57,15 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mLat = 0;
+        mLong = 0;
+
+        Bundle args = getArguments();
+        if(args != null) {
+            mLat = args.getDouble("lat");
+            mLong = args.getDouble("long");
+        }
     }
 
 
@@ -108,21 +118,21 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         //Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);
         //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        setUserMarker(new LatLng(mLat, mLong));
     }
 
 
     public void setUserMarker(LatLng latlng){
 
-        if (userMarker == null){
+        //if (userMarker == null){
             userMarker = new MarkerOptions().position(latlng).title("Current Location");
             mMap.addMarker(userMarker);
-            Log.v(TAG, "Current Location:" + latlng.latitude + " long:" + latlng.longitude);
-        }
+            Log.v(TAG, "Current Location: " + latlng.latitude + " long:" + latlng.longitude);
+        //}
 
         try {
             //Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
@@ -139,6 +149,7 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
         // TODO: Check if we still want to use ZIPCODE
         updateMapForStations(19104);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
+        Log.d(TAG, "Camera set.");
 
     }
 

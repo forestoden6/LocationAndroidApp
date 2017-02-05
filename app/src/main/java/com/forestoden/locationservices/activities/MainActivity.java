@@ -175,16 +175,29 @@ public class MainActivity extends AppCompatActivity implements
                     e.printStackTrace();
                 }
 
+                Log.d(TAG, "Getting location...");
+                mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                //Mapfragment.setUserMarker(new LatLng(mLocation.getLatitude(),mLocation.getLongitude()));
+
+                Bundle latLngBundle = new Bundle();
+                latLngBundle.putDouble("lat", mLocation.getLatitude());
+                latLngBundle.putDouble("long", mLocation.getLongitude());
+
+                fragment.setArguments(latLngBundle);
+
                 fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
 
+                //I believe this is reduntant as the app should ask for this permission when it opens
+                //but intellij gave a warning, so I put it in for now
                 int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
                 if(permissionCheck != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
                 }
-                mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                Mapfragment.setUserMarker(new LatLng(mLocation.getLatitude(),mLocation.getLongitude()));
+
+
+                Log.d(TAG, "User marker set");
 
 
                 //Mapfragment.setUserMarker(new LatLng(location.getLatitude(),location.getLongitude()));

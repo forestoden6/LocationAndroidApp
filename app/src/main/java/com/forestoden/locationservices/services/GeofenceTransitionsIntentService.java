@@ -27,6 +27,7 @@ import static com.forestoden.locationservices.globals.Constants.TRIP_TIMEOUT;
 
 /**
  * Created by ForestOden on 10/26/2016.
+ * Project: LocationServices.
  */
 
 public class GeofenceTransitionsIntentService extends IntentService {
@@ -81,7 +82,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
         int geofenceTransition = event.getGeofenceTransition();
 
-        List triggeringIDs = new ArrayList();
+        List<String> triggeringIDs = new ArrayList<>();
 
         /*
          * In theory, stations should far enough that only one Geofence is
