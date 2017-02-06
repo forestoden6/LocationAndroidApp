@@ -125,7 +125,6 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
         setUserMarker(new LatLng(mLat, mLong));
     }
 
-
     public void setUserMarker(LatLng latlng){
 
         //if (userMarker == null){

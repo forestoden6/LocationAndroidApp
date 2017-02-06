@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setHomeButtonEnabled(true);
         setupDrawer();
 
-        Mapfragment = (Mapfragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Mapfragment = (Mapfragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
         if (Mapfragment == null) {
             Mapfragment = Mapfragment.newInstance();
@@ -160,19 +160,26 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void selectItem(int position){
+    private void selectItem(int position) {
         //TODO: Want to refactor for 5.0 Menu maybe, how to keep backwards compat?
         Fragment fragment = null;
         FragmentManager fragmentManager = getSupportFragmentManager();
-        switch(position) {
+        switch (position) {
             case 0:
-                Toast.makeText(MainActivity.this, "This should be home!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "This should be home!", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 try {
                     fragment = (Fragment) Mapfragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+
+                //I believe this is reduntant as the app should ask for this permission when it opens
+                //but intellij gave an error, so I put it in for now
+                int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
                 }
 
                 Log.d(TAG, "Getting location...");
@@ -189,14 +196,6 @@ public class MainActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
 
-                //I believe this is reduntant as the app should ask for this permission when it opens
-                //but intellij gave a warning, so I put it in for now
-                int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-                if(permissionCheck != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
-                }
-
-
                 Log.d(TAG, "User marker set");
 
 
@@ -208,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements
                     fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
                 }*/
 
-                Toast.makeText(MainActivity.this, "This should be a map!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "This should be a map!", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
                 try {
@@ -220,13 +219,13 @@ public class MainActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
             case 3:
-                Toast.makeText(MainActivity.this, "This should be settings!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "This should be settings!", Toast.LENGTH_SHORT).show();
                 break;
             default:
         }
 
 
-        }
+    }
 //        Fragment fragement = new Mapfragment();
 //        Bundle args = new Bundle();
 //        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
@@ -238,7 +237,6 @@ public class MainActivity extends AppCompatActivity implements
 //        mDrawerList.setItemChecked(position, true);
 //        mDrawerLayout.closeDrawer(mDrawerList);
 //
-
 
 
     //Setup Navigation Drawer
@@ -269,12 +267,12 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.action_settings) {
+        if (id == R.id.action_settings) {
 
             return true;
         }
 
-        if(mDrawerToggle.onOptionsItemSelected(item)) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
@@ -296,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLocationChanged(Location location) {
         Log.v(TAG, "Long:" + location.getLongitude() + "Lat:" + location.getLatitude());
-        Mapfragment.setUserMarker(new LatLng(location.getLatitude(),location.getLongitude()));
+        Mapfragment.setUserMarker(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
     /*
@@ -311,12 +309,12 @@ public class MainActivity extends AppCompatActivity implements
         String stations = null;
         try {
             stations = stationConnection.execute(stationUrlObject).get();
-        } catch (InterruptedException|ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
         //Parse JSON returned by server and add to list of stations
-        if(stations != null){
+        if (stations != null) {
             JSONArray stationJson;
 
             try {
@@ -326,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements
                 return;
             }
 
-            if(stationJson.length() > 0) {
+            if (stationJson.length() > 0) {
                 for (int i = 0; i < stationJson.length(); i++) {
                     JSONObject stationJsonObject = stationJson.getJSONObject(i);
                     String name = (String) stationJsonObject.get("name_long");
@@ -347,8 +345,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
         //Create Geofence objects
-        //NOTE: Geofences will not be created here
-        for(Station station : STATIONS) {
+        //NOTE: Geofences will not be activated here
+        for (Station station : STATIONS) {
             mGeofenceList.add(new Geofence.Builder()
                     .setRequestId(station.getName())
                     .setCircularRegion(
@@ -369,29 +367,29 @@ public class MainActivity extends AppCompatActivity implements
      * We are using a ConnectionCallback to create the geofences when the GoogleApiClient is connected
      * and this functionality was migrated to onConnected.
 
-    public void createGeofences() {
-        Log.i(TAG, String.valueOf(mGoogleApiClient.isConnected()));
-        if(mGoogleApiClient.isConnecting()){
-            Toast.makeText(this, "Connecting to Google API Client.", Toast.LENGTH_SHORT).show();
-        }
-        if(!mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.connect();
-            Toast.makeText(this, "Google API Client not connected!", Toast.LENGTH_SHORT).show();
-            //return;
-        }
-        Log.i(TAG, String.valueOf(mGoogleApiClient.isConnected()));
-        //Toast.makeText(this, "Test", Toast.LENGTH_LONG).show();
-        try {
-            LocationServices.GeofencingApi.addGeofences(
-                    mGoogleApiClient,
-                    getGeofencingRequest(),
-                    getGeofencePendingIntent()
-            ).setResultCallback(this);
-        } catch (SecurityException securityException) {
-            //Catch permission error
-            //Occurs when Location permission is not granted
-        }
-    }
+     public void createGeofences() {
+     Log.i(TAG, String.valueOf(mGoogleApiClient.isConnected()));
+     if(mGoogleApiClient.isConnecting()){
+     Toast.makeText(this, "Connecting to Google API Client.", Toast.LENGTH_SHORT).show();
+     }
+     if(!mGoogleApiClient.isConnected()) {
+     mGoogleApiClient.connect();
+     Toast.makeText(this, "Google API Client not connected!", Toast.LENGTH_SHORT).show();
+     //return;
+     }
+     Log.i(TAG, String.valueOf(mGoogleApiClient.isConnected()));
+     //Toast.makeText(this, "Test", Toast.LENGTH_LONG).show();
+     try {
+     LocationServices.GeofencingApi.addGeofences(
+     mGoogleApiClient,
+     getGeofencingRequest(),
+     getGeofencePendingIntent()
+     ).setResultCallback(this);
+     } catch (SecurityException securityException) {
+     //Catch permission error
+     //Occurs when Location permission is not granted
+     }
+     }
      */
 
     private GeofencingRequest getGeofencingRequest() {
@@ -407,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void onResult(Status status) {
-        if(status.isSuccess()) {
+        if (status.isSuccess()) {
             Toast.makeText(this, "Geofences Added", Toast.LENGTH_SHORT).show();
         } else {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
@@ -426,7 +424,17 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        //createGeofences();
+
+        //I believe this is reduntant as the app should ask for this permission when it opens
+        //but intellij gave an error, so I put it in for now
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+        }
+        if(mGoogleApiClient.isConnected()) {
+            mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            Mapfragment.setUserMarker(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
+        }
     }
 
     /*@Override
