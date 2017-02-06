@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.fragments.Mapfragment;
 import com.forestoden.locationservices.fragments.ScheduleFragment;
+import com.forestoden.locationservices.fragments.ServiceAdvisoryFragment;
 import com.forestoden.locationservices.globals.Constants;
 import com.forestoden.locationservices.globals.GeofenceErrorMessages;
 import com.forestoden.locationservices.model.Station;
@@ -64,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback,
         ResultCallback<Status>,
         ScheduleFragment.OnFragmentInteractionListener,
-        Mapfragment.OnFragmentInteractionListener {
+        Mapfragment.OnFragmentInteractionListener,
+        ServiceAdvisoryFragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_FINE_LOCATION = 0;
     private static final int REQUEST_INTERNET = 1;
@@ -157,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);
+            mDrawerLayout.closeDrawer(mDrawerList);
         }
     }
 
@@ -196,6 +199,8 @@ public class MainActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
 
+                mActivityTitle = this.getString(R.string.map);
+
                 Log.d(TAG, "User marker set");
 
 
@@ -218,11 +223,27 @@ public class MainActivity extends AppCompatActivity implements
                 fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
+
+                mActivityTitle = this.getString(R.string.schedule);
+                break;
             case 3:
-                //Toast.makeText(MainActivity.this, "This should be settings!", Toast.LENGTH_SHORT).show();
+                try {
+                    fragment = (Fragment) ServiceAdvisoryFragment.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                        .commit();
+
+                mActivityTitle = this.getString(R.string.service_advisories);
                 break;
             default:
+                break;
         }
+
+        getSupportActionBar().setTitle(mActivityTitle);
 
 
     }
@@ -247,14 +268,14 @@ public class MainActivity extends AppCompatActivity implements
             /** Called when drawer has been fully opened */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Navigation Drawer");
+                //getSupportActionBar().setTitle("Navigation Drawer");
                 invalidateOptionsMenu();
             }
 
             /** Called when drawer has been fully closed */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(mActivityTitle);
+                //getSupportActionBar().setTitle(mActivityTitle);
                 invalidateOptionsMenu();
             }
         };
@@ -268,7 +289,6 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-
             return true;
         }
 
