@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setHomeButtonEnabled(true);
         setupDrawer();
 
-        Mapfragment = (Mapfragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        //Mapfragment = (Mapfragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
         if (Mapfragment == null) {
             Mapfragment = Mapfragment.newInstance();
