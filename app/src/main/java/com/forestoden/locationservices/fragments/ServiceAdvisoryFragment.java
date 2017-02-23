@@ -2,18 +2,27 @@ package com.forestoden.locationservices.fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.forestoden.locationservices.R;
-import com.forestoden.locationservices.services.GetAlertsTask;
+import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +44,14 @@ public class ServiceAdvisoryFragment extends Fragment {
     private String bslAlert;
 
     private OnFragmentInteractionListener mListener;
+
+    private HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+
+    private GenericUrl url =
+            new GenericUrl(
+                    "https://6kodfrx8ca.execute-api.us-west-2.amazonaws.com/alerts/Septa_Alerts");
+
+    private SwipeRefreshLayout swipeContainer;
 
     public ServiceAdvisoryFragment() {
         // Required empty public constructor
@@ -59,24 +76,11 @@ public class ServiceAdvisoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GetAlertsTask getAlertsTask  = new GetAlertsTask();
-        try {
-            alerts = getAlertsTask.execute(mfl, bsl).get();
-            mflAlert = alerts.get(0);
-            bslAlert = alerts.get(1);
-            if(!mflAlert.isEmpty()) {
-                mflAlert = mflAlert.replace("\\n", "\n");
-                mflAlert = mflAlert.replace("\"", "");
-            }
 
-            //bslAlert = getAlertsTask.execute(bsl).get();
-            if(!bslAlert.isEmpty()) {
-                bslAlert = bslAlert.replace("\\n", "\n");
-                bslAlert = bslAlert.replace("\"", "");
-            }
-        } catch (InterruptedException | ExecutionException e){
-            e.printStackTrace();
-        }
+        //Asynchronously get service alerts and update text views
+        new GetAlerts().execute(mfl, bsl);
+
+        //getActivity().setContentView(R.layout.activity_main);
     }
 
 
@@ -85,17 +89,30 @@ public class ServiceAdvisoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflateView = inflater.inflate(R.layout.fragment_service_advisory,
+               container, false);
+
+
+
+        return inflater.inflate(R.layout.fragment_service_advisory,
                 container, false);
+    }
 
-        //Set Alerts text
-        //Log.d(TAG, mflAlert);
-        TextView mflAlertTextView = (TextView)inflateView.findViewById(R.id.alerts_mfl);
-        mflAlertTextView.setText(mflAlert);
-        TextView bslAlertTextView = (TextView)inflateView.findViewById(R.id.alerts_bsl);
-        bslAlertTextView.setText(bslAlert);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
 
-        //Return inflated view with updated text
-        return inflateView;
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //Asynchronously get service alerts and update text views
+                new GetAlerts().execute(mfl, bsl);
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
 
@@ -137,5 +154,53 @@ public class ServiceAdvisoryFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class GetAlerts extends AsyncTask<String, Void, ArrayList<String>> {
+        @Override
+        protected ArrayList<String> doInBackground(String... strings) {
+            HttpRequestFactory requestFactory =
+                    HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
+                        @Override
+                        public void initialize(HttpRequest httpRequest) throws IOException {
+                            httpRequest.getHeaders().setContentType("application/json");
+                        }
+                    });
+
+            HttpRequest request;
+            HttpResponse response;
+            ArrayList<String> alerts = new ArrayList<>();
+
+            for(String s : strings) {
+                try {
+                    request = requestFactory.buildPostRequest(url,
+                            ByteArrayContent.fromString(null, s));
+                    response = request.execute();
+                    String alert = response.parseAsString();
+                    if(!alert.isEmpty()) {
+                        alert = alert.replace("\\n", "\n");
+                        alert = alert.replace("\"", "");
+                    }
+                    alerts.add(alert);
+                    //Log.i(TAG, alert);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return alerts;
+        }
+
+        protected void onPostExecute(ArrayList<String> alerts) {
+            mflAlert = alerts.get(0);
+            bslAlert = alerts.get(1);
+
+            TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
+            mflAlertTextView.setText(mflAlert);
+            TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
+            bslAlertTextView.setText(bslAlert);
+
+            swipeContainer.setRefreshing(false);
+        }
     }
 }

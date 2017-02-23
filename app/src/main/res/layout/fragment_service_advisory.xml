@@ -1,45 +1,52 @@
-<ScrollView android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipeContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5sp"
-        tools:context="com.forestoden.locationservices.fragments.ServiceAdvisoryFragment">
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5sp"
+            tools:context="com.forestoden.locationservices.fragments.ServiceAdvisoryFragment">
 
-        <TextView
-            android:id="@+id/service_mfl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mfl"
-            android:textSize="20sp"
-        />
-
-        <TextView
-            android:id="@+id/alerts_mfl"
-            android:layout_below="@id/service_mfl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
+            <TextView
+                android:id="@+id/service_mfl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mfl"
+                android:textSize="20sp"
             />
 
-        <TextView
-            android:id="@+id/service_bsl"
-            android:layout_below="@id/alerts_mfl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bsl"
-            android:textSize="20sp"
-        />
+            <TextView
+                android:id="@+id/alerts_mfl"
+                android:layout_below="@id/service_mfl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                />
 
-        <TextView
-            android:id="@+id/alerts_bsl"
-            android:layout_below="@id/service_bsl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
+            <TextView
+                android:id="@+id/service_bsl"
+                android:layout_below="@id/alerts_mfl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bsl"
+                android:textSize="20sp"
             />
 
-    </RelativeLayout>
-</ScrollView>
+            <TextView
+                android:id="@+id/alerts_bsl"
+                android:layout_below="@id/service_bsl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                />
+
+        </RelativeLayout>
+    </ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>
