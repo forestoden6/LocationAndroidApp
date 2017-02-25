@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.fragments.Mapfragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,7 +39,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
                 .addApi(LocationServices.API)
                 .build();
 
-        Mapfragment = (Mapfragment)getSupportFragmentManager().findFragmentById(R.id.container_main);
+        /*Mapfragment = (Mapfragment)getSupportFragmentManager().findFragmentById(R.id.container_main);
 
         if (Mapfragment == null) {
             Mapfragment = Mapfragment.newInstance();
@@ -48,7 +47,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
                     .beginTransaction()
                     .add(R.id.container_main, Mapfragment)
                     .commit();
-        }
+        }*/
     }
 
     @Override

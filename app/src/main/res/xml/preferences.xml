@@ -1,0 +1,14 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/trip_preferences">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="checkbox_preference"
+            android:title="@string/trip_tracking"
+            android:summary="@string/trip_tracking_summary" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

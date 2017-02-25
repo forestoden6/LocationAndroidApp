@@ -38,12 +38,20 @@
 
     <string name="zip_hint">Please enter a zip code</string>
 
+    <string name="home">Home</string>
     <string name="map">Map</string>
-
     <string name="schedule">Schedules</string>
-
     <string name="service_advisories">Service Advisories</string>
+    <string name="settings">Settings</string>
 
     <string name="mfl">Market-Frankford Line</string>
     <string name="bsl">Broad Street Line</string>
+
+    <!-- Settings Strings -->
+    <string name="trip_preferences">Trip Preferences</string>
+    <string name="trip_tracking">Track Trips?</string>
+    <string name="trip_tracking_summary">Enable/Disable Trip Tracking</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.forestoden.locationservices.activities;
 
 import android.Manifest;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,9 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.fragments.HomeFragment;
 import com.forestoden.locationservices.fragments.Mapfragment;
 import com.forestoden.locationservices.fragments.ScheduleFragment;
 import com.forestoden.locationservices.fragments.ServiceAdvisoryFragment;
+import com.forestoden.locationservices.fragments.SettingsFragment;
 import com.forestoden.locationservices.globals.Constants;
 import com.forestoden.locationservices.globals.GeofenceErrorMessages;
 import com.forestoden.locationservices.model.Station;
@@ -64,9 +66,11 @@ public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener,
         ActivityCompat.OnRequestPermissionsResultCallback,
         ResultCallback<Status>,
-        ScheduleFragment.OnFragmentInteractionListener,
+        HomeFragment.OnFragmentInteractionListener,
         Mapfragment.OnFragmentInteractionListener,
-        ServiceAdvisoryFragment.OnFragmentInteractionListener {
+        ScheduleFragment.OnFragmentInteractionListener,
+        ServiceAdvisoryFragment.OnFragmentInteractionListener,
+        SettingsFragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_FINE_LOCATION = 0;
     private static final int REQUEST_INTERNET = 1;
@@ -130,13 +134,13 @@ public class MainActivity extends AppCompatActivity implements
 
         //Mapfragment = (Mapfragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
-        if (Mapfragment == null) {
-            Mapfragment = Mapfragment.newInstance();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_container, Mapfragment)
-                    .commit();
-        }
+        //if (Mapfragment == null) {
+        HomeFragment homeFragment = HomeFragment.newInstance();
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, homeFragment)
+                .commit();
+        //}
 
         mLatitudeText = (TextView) findViewById(R.id.latitude_text);
         mLongitudeText = (TextView) findViewById(R.id.longitude_text);
@@ -166,14 +170,22 @@ public class MainActivity extends AppCompatActivity implements
     private void selectItem(int position) {
         //TODO: Want to refactor for 5.0 Menu maybe, how to keep backwards compat?
         Fragment fragment = null;
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getFragmentManager();
         switch (position) {
             case 0:
-                //Toast.makeText(MainActivity.this, "This should be home!", Toast.LENGTH_SHORT).show();
+                try {
+                    fragment = HomeFragment.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                        .commit();
+
+                mActivityTitle = this.getString(R.string.home);
                 break;
             case 1:
                 try {
-                    fragment = (Fragment) Mapfragment.newInstance();
+                    fragment = Mapfragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -195,7 +207,6 @@ public class MainActivity extends AppCompatActivity implements
 
                 fragment.setArguments(latLngBundle);
 
-                fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
 
@@ -220,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
 
@@ -228,16 +238,32 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case 3:
                 try {
-                    fragment = (Fragment) ServiceAdvisoryFragment.newInstance();
+                    fragment = ServiceAdvisoryFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
 
                 mActivityTitle = this.getString(R.string.service_advisories);
+                break;
+            case 4:
+                /*try {
+                    fragment = (Fragment) SettingsFragment.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                        .commit();*/
+
+                //fragmentManager = getSupportFragmentManager();
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SettingsFragment())
+                        .commit();
+
+                mActivityTitle = this.getString(R.string.settings);
                 break;
             default:
                 break;
@@ -313,11 +339,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.v(TAG, "Long:" + location.getLongitude() + "Lat:" + location.getLatitude());
-        Mapfragment.setUserMarker(new LatLng(location.getLatitude(), location.getLongitude()));
+        //Log.v(TAG, "Long:" + location.getLongitude() + "Lat:" + location.getLatitude());
+        //Mapfragment.setUserMarker(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
-    /*
+    /**
      * Creates the list of station locations obtained from the server
      * Parses JSON returned by GetStationsTask
      * Adds to HashMap
