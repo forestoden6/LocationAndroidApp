@@ -38,14 +38,27 @@
 
     <string name="zip_hint">Please enter a zip code</string>
 
+    <!-- Fragment Titles -->
     <string name="home">Home</string>
     <string name="map">Map</string>
     <string name="schedule">Schedules</string>
     <string name="service_advisories">Service Advisories</string>
     <string name="settings">Settings</string>
 
+    <!-- Home Fragment -->
+    <string name="prediction">Predicted Destination</string>
+    <string name="alerts">SEPTA Alerts</string>
+    <string name="past_trips">Past Trips</string>
+
+    <!-- SEPTA Lines -->
     <string name="mfl">Market-Frankford Line</string>
     <string name="bsl">Broad Street Line</string>
+
+    <!-- Service Advisory -->
+    <string name="advisory_failed">Failed to get SEPTA Advisories</string>
+    <string name="mfl_key">{"key1":"mfl"}</string>
+    <string name="bsl_key">{"key1":"bsl"}</string>
+    <string name="no_alerts">There are no alerts at this time!</string>
 
     <!-- Settings Strings -->
     <string name="trip_preferences">Trip Preferences</string>

@@ -3,7 +3,6 @@ package com.forestoden.locationservices.fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -12,16 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.forestoden.locationservices.R;
-import com.google.api.client.http.ByteArrayContent;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
+import com.forestoden.locationservices.services.GetAlertsTask;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -32,24 +23,17 @@ import java.util.ArrayList;
  * Use the {@link ServiceAdvisoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ServiceAdvisoryFragment extends Fragment {
+public class ServiceAdvisoryFragment extends Fragment
+    implements GetAlertsTask.OnAsyncRequestComplete {
     private static final String TAG = ServiceAdvisoryFragment.class.getName();
 
-    private String mfl = "{\"key1\":\"mfl\"}";
-    private String bsl = "{\"key1\":\"bsl\"}";
-
-    private ArrayList<String> alerts = new ArrayList<>();
-
     private String mflAlert;
+    private String mflAdvisory;
     private String bslAlert;
+    private String bslAdvisory;
 
     private OnFragmentInteractionListener mListener;
 
-    private HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-
-    private GenericUrl url =
-            new GenericUrl(
-                    "https://6kodfrx8ca.execute-api.us-west-2.amazonaws.com/alerts/Septa_Alerts");
 
     private SwipeRefreshLayout swipeContainer;
 
@@ -78,7 +62,8 @@ public class ServiceAdvisoryFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //Asynchronously get service alerts and update text views
-        new GetAlerts().execute(mfl, bsl);
+        new GetAlertsTask(this).execute(String.valueOf(R.string.mfl_key),
+                String.valueOf(R.string.bsl_key));
 
         //getActivity().setContentView(R.layout.activity_main);
     }
@@ -99,13 +84,17 @@ public class ServiceAdvisoryFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.advisorySwipeContainer);
+
+        final Fragment f = this;
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 //Asynchronously get service alerts and update text views
-                new GetAlerts().execute(mfl, bsl);
+                GetAlertsTask getAlertsTask = new GetAlertsTask(f);
+                getAlertsTask.execute(String.valueOf(R.string.mfl_key),
+                        String.valueOf(R.string.bsl_key));
             }
         });
 
@@ -141,6 +130,29 @@ public class ServiceAdvisoryFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void asyncResponse(ArrayList<String> response) {
+        if (response.size() == 4) {
+            mflAlert = response.get(0);
+            mflAdvisory = response.get(1);
+            bslAlert = response.get(2);
+            bslAdvisory = response.get(3);
+
+            TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
+            mflAlertTextView.setText(mflAlert + mflAdvisory);
+            TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
+            bslAlertTextView.setText(bslAlert + bslAdvisory);
+        }
+        else {
+            TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
+            mflAlertTextView.setText(R.string.advisory_failed);
+            TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
+            bslAlertTextView.setText(R.string.advisory_failed);
+        }
+
+        swipeContainer.setRefreshing(false);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -154,53 +166,5 @@ public class ServiceAdvisoryFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    private class GetAlerts extends AsyncTask<String, Void, ArrayList<String>> {
-        @Override
-        protected ArrayList<String> doInBackground(String... strings) {
-            HttpRequestFactory requestFactory =
-                    HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-                        @Override
-                        public void initialize(HttpRequest httpRequest) throws IOException {
-                            httpRequest.getHeaders().setContentType("application/json");
-                        }
-                    });
-
-            HttpRequest request;
-            HttpResponse response;
-            ArrayList<String> alerts = new ArrayList<>();
-
-            for(String s : strings) {
-                try {
-                    request = requestFactory.buildPostRequest(url,
-                            ByteArrayContent.fromString(null, s));
-                    response = request.execute();
-                    String alert = response.parseAsString();
-                    if(!alert.isEmpty()) {
-                        alert = alert.replace("\\n", "\n");
-                        alert = alert.replace("\"", "");
-                    }
-                    alerts.add(alert);
-                    //Log.i(TAG, alert);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return alerts;
-        }
-
-        protected void onPostExecute(ArrayList<String> alerts) {
-            mflAlert = alerts.get(0);
-            bslAlert = alerts.get(1);
-
-            TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
-            mflAlertTextView.setText(mflAlert);
-            TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
-            bslAlertTextView.setText(bslAlert);
-
-            swipeContainer.setRefreshing(false);
-        }
     }
 }

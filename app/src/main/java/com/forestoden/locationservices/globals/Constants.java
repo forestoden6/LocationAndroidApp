@@ -38,6 +38,7 @@ public class Constants {
 
     public static String uuid = Settings.Secure.ANDROID_ID;
 
+
     private Constants() {
     }
 }

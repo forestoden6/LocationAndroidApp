@@ -4,11 +4,16 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.services.GetAlertsTask;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +23,8 @@ import com.forestoden.locationservices.R;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment
+    implements GetAlertsTask.OnAsyncRequestComplete {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -29,6 +35,8 @@ public class HomeFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private SwipeRefreshLayout swipeContainer;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -59,13 +67,47 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        new GetAlertsTask(this).execute(String.valueOf(R.string.mfl_key),
+                String.valueOf(R.string.bsl_key));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View inflatedView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        TextView predictionText = (TextView)inflatedView.findViewById(R.id.prediction);
+        predictionText.setText("Not implemented.");
+        TextView alertText = (TextView)inflatedView.findViewById(R.id.alerts);
+        alertText.setText("Not implemented.");
+        TextView tripText = (TextView)inflatedView.findViewById(R.id.past_trips);
+        tripText.setText("Not implemented.");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return inflatedView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.homeSwipeContainer);
+
+        final Fragment f = this;
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //Asynchronously get service alerts and update text views
+                GetAlertsTask getAlertsTask = new GetAlertsTask(f);
+                getAlertsTask.execute(String.valueOf(R.string.mfl_key),
+                        String.valueOf(R.string.bsl_key));
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -90,6 +132,25 @@ public class HomeFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void asyncResponse(ArrayList<String> response) {
+        if(response.size() == 4) {
+            String mflAlert = response.get(0);
+            String bslAlert = response.get(2);
+
+            if (mflAlert.isEmpty() && bslAlert.isEmpty()) {
+                TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
+                alertTextView.setText(R.string.no_alerts);
+            } else {
+                TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
+                alertTextView.setText(mflAlert + bslAlert);
+            }
+        } else {
+            TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
+            alertTextView.setText(R.string.advisory_failed);
+        }
     }
 
     /**
