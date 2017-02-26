@@ -2,7 +2,6 @@ package com.forestoden.locationservices.services;
 
 import android.app.Fragment;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
@@ -69,7 +68,6 @@ public class GetAlertsTask extends AsyncTask<String, Void, ArrayList<String>> {
                 }
                 alerts.add(alert);
                 alerts.add(advisory);
-                //Log.i(TAG, alert);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -79,7 +77,6 @@ public class GetAlertsTask extends AsyncTask<String, Void, ArrayList<String>> {
     }
 
     protected void onPostExecute(ArrayList<String> alerts) {
-        Log.d(TAG, String.valueOf(alerts.size()));
         caller.asyncResponse(alerts);
     }
 

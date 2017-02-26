@@ -62,8 +62,8 @@ public class ServiceAdvisoryFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         //Asynchronously get service alerts and update text views
-        new GetAlertsTask(this).execute(String.valueOf(R.string.mfl_key),
-                String.valueOf(R.string.bsl_key));
+        new GetAlertsTask(this).execute(getResources().getString(R.string.mfl_key),
+                getResources().getString(R.string.bsl_key));
 
         //getActivity().setContentView(R.layout.activity_main);
     }
@@ -93,8 +93,8 @@ public class ServiceAdvisoryFragment extends Fragment
             public void onRefresh() {
                 //Asynchronously get service alerts and update text views
                 GetAlertsTask getAlertsTask = new GetAlertsTask(f);
-                getAlertsTask.execute(String.valueOf(R.string.mfl_key),
-                        String.valueOf(R.string.bsl_key));
+                getAlertsTask.execute(getResources().getString(R.string.mfl_key),
+                        getResources().getString(R.string.bsl_key));
             }
         });
 

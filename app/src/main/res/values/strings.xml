@@ -56,8 +56,8 @@
 
     <!-- Service Advisory -->
     <string name="advisory_failed">Failed to get SEPTA Advisories</string>
-    <string name="mfl_key">{"key1":"mfl"}</string>
-    <string name="bsl_key">{"key1":"bsl"}</string>
+    <string name="mfl_key">{\"key1\":\"mfl\"}</string>
+    <string name="bsl_key">{\"key1\":\"bsl\"}</string>
     <string name="no_alerts">There are no alerts at this time!</string>
 
     <!-- Settings Strings -->

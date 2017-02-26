@@ -68,8 +68,8 @@ public class HomeFragment extends Fragment
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        new GetAlertsTask(this).execute(String.valueOf(R.string.mfl_key),
-                String.valueOf(R.string.bsl_key));
+        new GetAlertsTask(this).execute(getResources().getString(R.string.mfl_key),
+                getResources().getString(R.string.bsl_key));
     }
 
     @Override
@@ -98,8 +98,8 @@ public class HomeFragment extends Fragment
             public void onRefresh() {
                 //Asynchronously get service alerts and update text views
                 GetAlertsTask getAlertsTask = new GetAlertsTask(f);
-                getAlertsTask.execute(String.valueOf(R.string.mfl_key),
-                        String.valueOf(R.string.bsl_key));
+                getAlertsTask.execute(getResources().getString(R.string.mfl_key),
+                        getResources().getString(R.string.bsl_key));
             }
         });
 
@@ -151,6 +151,8 @@ public class HomeFragment extends Fragment
             TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
             alertTextView.setText(R.string.advisory_failed);
         }
+
+        swipeContainer.setRefreshing(false);
     }
 
     /**
