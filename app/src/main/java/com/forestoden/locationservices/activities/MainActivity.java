@@ -5,11 +5,14 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -37,6 +40,7 @@ import com.forestoden.locationservices.globals.GeofenceErrorMessages;
 import com.forestoden.locationservices.model.Station;
 import com.forestoden.locationservices.services.GeofenceTransitionsIntentService;
 import com.forestoden.locationservices.services.GetStationsTask;
+import com.forestoden.locationservices.services.UserTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -116,14 +120,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //Set click listener to get menu selection
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-//        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
-//        {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-//                Toast.makeText(MainActivity.this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        );
+
 
         createGoogleApiClient();
 
@@ -132,20 +129,31 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setHomeButtonEnabled(true);
         setupDrawer();
 
-        //Mapfragment = (Mapfragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Mapfragment = Mapfragment.newInstance();
 
-        //if (Mapfragment == null) {
+        //Create and display Home Fragment
         HomeFragment homeFragment = HomeFragment.newInstance();
         getFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, homeFragment)
                 .commit();
+
+        //First Run detection, create user
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //if(prefs.getBoolean("newUser", true)) {
+        //    SharedPreferences.Editor editor = prefs.edit();
+        //    editor.putBoolean("newUser",false);
+        //    editor.apply();
+
+            //Create User in Back-end
+        String uuid = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        Log.d(TAG, uuid);
+        uuid = "udid=" + uuid;
+        new UserTask().execute(uuid);
         //}
 
-        mLatitudeText = (TextView) findViewById(R.id.latitude_text);
-        mLongitudeText = (TextView) findViewById(R.id.longitude_text);
+        //Create Geofence List (but not initialize them)
         mGeofenceList = new ArrayList<Geofence>();
-        mGeofenceList = new ArrayList<>();
 
         try {
             createGeofenceList();
@@ -184,8 +192,10 @@ public class MainActivity extends AppCompatActivity implements
                 mActivityTitle = this.getString(R.string.home);
                 break;
             case 1:
+                Mapfragment mapfragment = null;
+                android.support.v4.app.FragmentManager supportFragmentManager = getSupportFragmentManager();
                 try {
-                    fragment = Mapfragment.newInstance();
+                    mapfragment = Mapfragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -205,9 +215,9 @@ public class MainActivity extends AppCompatActivity implements
                 latLngBundle.putDouble("lat", mLocation.getLatitude());
                 latLngBundle.putDouble("long", mLocation.getLongitude());
 
-                fragment.setArguments(latLngBundle);
+                mapfragment.setArguments(latLngBundle);
 
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, mapfragment)
                         .commit();
 
                 mActivityTitle = this.getString(R.string.map);
@@ -518,11 +528,15 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         try {
-            LocationServices.GeofencingApi.addGeofences(
-                    mGoogleApiClient,
-                    getGeofencingRequest(),
-                    getGeofencePendingIntent()
-            );
+            if (!mGeofenceList.isEmpty()) {
+                LocationServices.GeofencingApi.addGeofences(
+                        mGoogleApiClient,
+                        getGeofencingRequest(),
+                        getGeofencePendingIntent()
+                );
+            } else {
+                Toast.makeText(this, "Failed to add Geofences.", Toast.LENGTH_SHORT).show();
+            }
         } catch (SecurityException securityException) {
             //Catch permission error
             //Occurs when Location permission is not granted
