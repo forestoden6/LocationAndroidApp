@@ -41,7 +41,7 @@ public class Trip {
         editor.putBoolean("New Trip", newTrip);
         editor.putString("Station", geofence.getRequestId());
         editor.putString("Time", date.toString());
-        editor.commit();
+        editor.apply();
     }
 
     public void setEnd(Geofence geofence, Date date) {
@@ -57,16 +57,16 @@ public class Trip {
         return end;
     }
 
-    public long getStartTime() {
-        return startDate.getTime();
+    public Date getStartTime() {
+        return startDate;
     }
 
-    public long getEndTime() {
-        return endDate.getTime();
+    public Date getEndTime() {
+        return endDate;
     }
 
     public long getTripDuration() {
-        return getEndTime() - getStartTime();
+        return getEndTime().getTime() - getStartTime().getTime();
     }
 
     public void resetTrip() {

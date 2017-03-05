@@ -1,7 +1,5 @@
 package com.forestoden.locationservices.model;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -11,29 +9,23 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Station {
 
-    private int ID1;
-    private int ID2;
+    private int ID;
     private String name;
     private String address;
     private LatLng latLng;
-    private int lineID;
+    private String line;
 
-    public Station(int id1, int id2, String name, String address, LatLng latLng, int lineID) {
+    public Station(int id, String name, String address, LatLng latLng, String line) {
         this.address = address;
-        this.ID1 = id1;
-        this.ID2 = id2;
+        this.ID = id;
         this.name = name;
         this.latLng = latLng;
-        this.lineID = lineID;
+        this.line = line;
 
     }
 
-    public int getID1() {
-        return ID1;
-    }
-
-    public int getID2() {
-        return ID2;
+    public int getID() {
+        return ID;
     }
 
     public String getName() {
@@ -48,8 +40,8 @@ public class Station {
         return latLng;
     }
 
-    public int getLineID() {
-        return lineID;
+    public String getLine() {
+        return line;
     }
 
 }

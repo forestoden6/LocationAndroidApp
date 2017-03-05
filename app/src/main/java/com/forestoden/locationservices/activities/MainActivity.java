@@ -12,7 +12,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -47,6 +46,7 @@ import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.iid.InstanceID;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
@@ -64,6 +64,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import static com.forestoden.locationservices.globals.Constants.STATIONS;
+import static com.forestoden.locationservices.globals.Constants.StationMap;
+import static com.forestoden.locationservices.globals.Constants.UDID;
 import static com.forestoden.locationservices.globals.Constants.stationUrl;
 
 public class MainActivity extends AppCompatActivity implements
@@ -138,19 +140,23 @@ public class MainActivity extends AppCompatActivity implements
                 .add(R.id.fragment_container, homeFragment)
                 .commit();
 
+        String udid = InstanceID.getInstance(this).getId();
+        UDID = udid;
+
         //First Run detection, create user
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if(prefs.getBoolean("newUser", true)) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("newUser",false);
-            editor.apply();
+        //if(prefs.getBoolean("newUser", true)) {
+        //    SharedPreferences.Editor editor = prefs.edit();
+        //    editor.putBoolean("newUser",false);
+        //    editor.apply();
 
             //Create User in Back-end
-            String uuid = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-            Log.d(TAG, uuid);
-            uuid = "udid=" + uuid;
-            new UserTask().execute(uuid);
-        }
+            //String uuid = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+            //String udid = InstanceID.getInstance(this).getId();
+            Log.d(TAG, udid);
+            udid = "udid=" + udid;
+            new UserTask().execute(udid);
+        //}
 
         //Create Geofence List (but not initialize them)
         mGeofenceList = new ArrayList<Geofence>();
@@ -386,9 +392,13 @@ public class MainActivity extends AppCompatActivity implements
                     String name = (String) stationJsonObject.get("name_long");
                     double latitude = Double.parseDouble((String) stationJsonObject.get("latitude"));
                     double longitude = Double.parseDouble((String) stationJsonObject.get("longitude"));
+                    int id = Integer.parseInt((String) stationJsonObject.get("id_station"));
+                    String address = stationJsonObject.getString("address");
+                    String line = stationJsonObject.getString("line");
                     /* TODO: IDs and Address are placeholders for now. MUST ADD! */
-                    Station station = new Station(0, 1, name, "", new LatLng(latitude, longitude), 0);
+                    Station station = new Station(id, name, address, new LatLng(latitude, longitude), line);
                     STATIONS.add(station);
+                    StationMap.put(name, station);
                 }
             } else {
                 Log.e(TAG, "Empty JSON returned by server");

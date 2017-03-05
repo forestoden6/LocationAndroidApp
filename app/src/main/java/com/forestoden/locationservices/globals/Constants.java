@@ -4,6 +4,7 @@ import com.forestoden.locationservices.model.Station;
 import com.google.android.gms.location.Geofence;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,13 +26,17 @@ public class Constants {
 
     public static List<Station> STATIONS = new ArrayList<>();
 
+    public static HashMap<String, Station> StationMap = new HashMap<>();
+
     public List<Station> getStationLocations(){
         return STATIONS;
     }
 
     private static final int MS_PER_SECOND = 1000;
     private static final int SECONDS_PER_MINUTE = 60 * MS_PER_SECOND;
-    public static final int TRIP_TIMEOUT = 5 * SECONDS_PER_MINUTE;
+    public static final int TRIP_TIMEOUT = 1 * SECONDS_PER_MINUTE;
+
+    public static String UDID;
 
     private Constants() {
     }

@@ -43,7 +43,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     public GeofenceTransitionsIntentService() {
         super(TAG);
-
     }
 
     /**
@@ -62,6 +61,10 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
         String description = getGeofenceTransitionDetails(event);
         Log.i(TAG, description);
+        /*if(tripTimerTask == null) {
+            tripTimerTask
+            Log.d(TAG, "Trip Task created.");
+        }*/
     }
 
     /**
