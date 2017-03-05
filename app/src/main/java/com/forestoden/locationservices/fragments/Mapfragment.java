@@ -8,12 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 
 import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.globals.Constants;
@@ -78,7 +75,7 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        final EditText zipText = (EditText)view.findViewById(R.id.zip_text);
+        /*final EditText zipText = (EditText)view.findViewById(R.id.zip_text);
         zipText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -97,7 +94,7 @@ public class Mapfragment extends Fragment implements OnMapReadyCallback {
                 }
                 return false;
             }
-        });
+        });*/
 
         return view;
     }

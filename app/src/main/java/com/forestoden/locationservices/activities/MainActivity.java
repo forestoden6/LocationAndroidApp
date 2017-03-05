@@ -140,17 +140,17 @@ public class MainActivity extends AppCompatActivity implements
 
         //First Run detection, create user
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //if(prefs.getBoolean("newUser", true)) {
-        //    SharedPreferences.Editor editor = prefs.edit();
-        //    editor.putBoolean("newUser",false);
-        //    editor.apply();
+        if(prefs.getBoolean("newUser", true)) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("newUser",false);
+            editor.apply();
 
             //Create User in Back-end
-        String uuid = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        Log.d(TAG, uuid);
-        uuid = "udid=" + uuid;
-        new UserTask().execute(uuid);
-        //}
+            String uuid = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+            Log.d(TAG, uuid);
+            uuid = "udid=" + uuid;
+            new UserTask().execute(uuid);
+        }
 
         //Create Geofence List (but not initialize them)
         mGeofenceList = new ArrayList<Geofence>();

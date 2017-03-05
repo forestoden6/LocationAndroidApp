@@ -28,7 +28,7 @@ public class UserTask extends AsyncTask<String, Integer, String> {
 
     private GenericUrl url =
             new GenericUrl(
-            "http://lowcost-env.r8dpz7s6b2.us-west-2.elasticbeanstalk.com/users.php");
+            "http://lowcost-env.r8dpz7s6b2.us-west-2.elasticbeanstalk.com/users/");
 
     @Override
     protected String doInBackground(String... strings) {
@@ -36,7 +36,7 @@ public class UserTask extends AsyncTask<String, Integer, String> {
                 HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
                     @Override
                     public void initialize(HttpRequest httpRequest) throws IOException {
-                        httpRequest.getHeaders().setContentType("application/json");
+                        httpRequest.getHeaders().setContentType("application/x-www-form-urlencoded");
                     }
                 });
 
