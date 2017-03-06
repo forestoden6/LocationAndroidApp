@@ -132,25 +132,27 @@ public class ServiceAdvisoryFragment extends Fragment
 
     @Override
     public void asyncResponse(ArrayList<String> response) {
-        if (response.size() == 4) {
-            mflAlert = response.get(0);
-            mflAdvisory = response.get(1);
-            bslAlert = response.get(2);
-            bslAdvisory = response.get(3);
+        if (this.isVisible()) {
+            if (response.size() == 4) {
+                mflAlert = response.get(0);
+                mflAdvisory = response.get(1);
+                bslAlert = response.get(2);
+                bslAdvisory = response.get(3);
 
-            TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
-            mflAlertTextView.setText(mflAlert + mflAdvisory);
-            TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
-            bslAlertTextView.setText(bslAlert + bslAdvisory);
-        }
-        else {
-            TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
-            mflAlertTextView.setText(R.string.advisory_failed);
-            TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
-            bslAlertTextView.setText(R.string.advisory_failed);
-        }
+                TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
+                mflAlertTextView.setText(mflAlert + mflAdvisory);
+                TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
+                bslAlertTextView.setText(bslAlert + bslAdvisory);
+            }
+            else {
+                TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
+                mflAlertTextView.setText(R.string.advisory_failed);
+                TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
+                bslAlertTextView.setText(R.string.advisory_failed);
+            }
 
-        swipeContainer.setRefreshing(false);
+            swipeContainer.setRefreshing(false);
+        }
     }
 
     /**

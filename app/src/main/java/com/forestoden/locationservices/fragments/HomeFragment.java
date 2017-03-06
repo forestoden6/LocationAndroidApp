@@ -136,23 +136,25 @@ public class HomeFragment extends Fragment
 
     @Override
     public void asyncResponse(ArrayList<String> response) {
-        if(response.size() == 4) {
-            String mflAlert = response.get(0);
-            String bslAlert = response.get(2);
+        if (this.isVisible()) {
+            if(response.size() == 4) {
+                String mflAlert = response.get(0);
+                String bslAlert = response.get(2);
 
-            if (mflAlert.isEmpty() && bslAlert.isEmpty()) {
-                TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
-                alertTextView.setText(R.string.no_alerts);
+                if (mflAlert.isEmpty() && bslAlert.isEmpty()) {
+                    TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
+                    alertTextView.setText(R.string.no_alerts);
+                } else {
+                    TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
+                    alertTextView.setText(mflAlert + bslAlert);
+                }
             } else {
                 TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
-                alertTextView.setText(mflAlert + bslAlert);
+                alertTextView.setText(R.string.advisory_failed);
             }
-        } else {
-            TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
-            alertTextView.setText(R.string.advisory_failed);
-        }
 
-        swipeContainer.setRefreshing(false);
+            swipeContainer.setRefreshing(false);
+        }
     }
 
     /**

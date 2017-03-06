@@ -493,14 +493,14 @@ public class MainActivity extends AppCompatActivity implements
 
         //I believe this is reduntant as the app should ask for this permission when it opens
         //but intellij gave an error, so I put it in for now
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+/*        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
         }
         if(mGoogleApiClient.isConnected()) {
             mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             Mapfragment.setUserMarker(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
-        }
+        }*/
     }
 
     /*@Override
