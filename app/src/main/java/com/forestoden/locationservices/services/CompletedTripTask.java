@@ -20,8 +20,8 @@ class CompletedTripTask extends TimerTask {
     public void run() {
         Trip trip = GeofenceTransitionsIntentService.trip;
         //Log.d(TAG, "Sending trip" + GeofenceTransitionsIntentService.trip.getStart().toString());
-        Log.i(TAG, "Trip: " + trip.getStart().getRequestId() + " to " +
-                trip.getEnd().getRequestId() + ". Duration: " + trip.getTripDuration());
+        Log.i(TAG, "Trip: " + trip.getStart().getName() + " to " +
+                trip.getEnd().getName() + ". Duration: " + trip.getTripDuration());
         trip.resetTrip();
         //TODO: Implement API calls to save
         //Will Create new class that extends ASyncTask, SaveCompletedTripTask

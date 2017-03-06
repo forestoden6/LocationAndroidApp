@@ -3,8 +3,6 @@ package com.forestoden.locationservices.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.android.gms.location.Geofence;
-
 import java.util.Date;
 
 /**
@@ -13,16 +11,26 @@ import java.util.Date;
 
 public class Trip {
 
-    private Geofence start;
-    private Geofence end;
+    private Station start;
+    private Station end;
 
     private Date startDate;
     private Date endDate;
+
+    private int id;
 
     private boolean newTrip = true;
 
     public Trip() {
 
+    }
+
+    public Trip(Station start, Station end, Date startDate, Date endDate, int id) {
+        this.start = start;
+        this.end = end;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.id = id;
     }
 
     public  boolean isNewTrip() {
@@ -31,29 +39,31 @@ public class Trip {
 
     //TODO: Decide on how to store dates
     //Probably change how times are stored
-    public void setStart(Geofence geofence, Date date, Context mContext) {
-        start = geofence;
+    public void setStart(Station station, Date date, Context mContext) {
+        start = station;
         startDate = date;
         newTrip = false;
         SharedPreferences tripSharedPref = mContext.getSharedPreferences("Start",
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = tripSharedPref.edit();
         editor.putBoolean("New Trip", newTrip);
-        editor.putString("Station", geofence.getRequestId());
+        editor.putString("Station", station.getName());
         editor.putString("Time", date.toString());
         editor.apply();
     }
 
-    public void setEnd(Geofence geofence, Date date) {
-        end = geofence;
+    public void setEnd(Station station, Date date) {
+        end = station;
         endDate = date;
     }
 
-    public Geofence getStart() {
+    public int getId() { return id; }
+
+    public Station getStart() {
         return start;
     }
 
-    public Geofence getEnd() {
+    public Station getEnd() {
         return end;
     }
 
@@ -68,6 +78,8 @@ public class Trip {
     public long getTripDuration() {
         return getEndTime().getTime() - getStartTime().getTime();
     }
+
+    public void setId(int id) { this.id = id; }
 
     public void resetTrip() {
         //setStart(null, null);

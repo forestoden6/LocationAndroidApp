@@ -80,7 +80,7 @@ public class GetAlertsTask extends AsyncTask<String, Void, ArrayList<String>> {
         caller.asyncResponse(alerts);
     }
 
-    // Interface to be implemented by calling activity
+    // Interface to be implemented by calling fragment/activity
     public interface OnAsyncRequestComplete {
         void asyncResponse(ArrayList<String> response);
     }

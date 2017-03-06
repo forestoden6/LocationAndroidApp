@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import static com.forestoden.locationservices.globals.Constants.STATIONS;
+import static com.forestoden.locationservices.globals.Constants.StationIDMap;
 import static com.forestoden.locationservices.globals.Constants.StationMap;
 import static com.forestoden.locationservices.globals.Constants.UDID;
 import static com.forestoden.locationservices.globals.Constants.stationUrl;
@@ -142,13 +143,14 @@ public class MainActivity extends AppCompatActivity implements
 
         String udid = InstanceID.getInstance(this).getId();
         UDID = udid;
+        Log.d(TAG, udid);
 
         //First Run detection, create user
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //if(prefs.getBoolean("newUser", true)) {
-        //    SharedPreferences.Editor editor = prefs.edit();
-        //    editor.putBoolean("newUser",false);
-        //    editor.apply();
+        if(prefs.getBoolean("newUser", true)) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("newUser",false);
+            editor.apply();
 
             //Create User in Back-end
             //String uuid = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -156,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(TAG, udid);
             udid = "udid=" + udid;
             new UserTask().execute(udid);
-        //}
+        }
 
         //Create Geofence List (but not initialize them)
         mGeofenceList = new ArrayList<Geofence>();
@@ -399,6 +401,7 @@ public class MainActivity extends AppCompatActivity implements
                     Station station = new Station(id, name, address, new LatLng(latitude, longitude), line);
                     STATIONS.add(station);
                     StationMap.put(name, station);
+                    StationIDMap.put(id, name);
                 }
             } else {
                 Log.e(TAG, "Empty JSON returned by server");

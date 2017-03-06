@@ -11,9 +11,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.model.Trip;
 import com.forestoden.locationservices.services.GetAlertsTask;
+import com.forestoden.locationservices.services.GetTripsTask;
 
 import java.util.ArrayList;
+
+import static com.forestoden.locationservices.globals.Constants.UDID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +28,8 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment
-    implements GetAlertsTask.OnAsyncRequestComplete {
+    implements GetAlertsTask.OnAsyncRequestComplete ,
+    GetTripsTask.OnAsyncRequestComplete {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -70,6 +75,7 @@ public class HomeFragment extends Fragment
 
         new GetAlertsTask(this).execute(getResources().getString(R.string.mfl_key),
                 getResources().getString(R.string.bsl_key));
+        new GetTripsTask(this).execute("udid="+UDID);
     }
 
     @Override
@@ -100,6 +106,8 @@ public class HomeFragment extends Fragment
                 GetAlertsTask getAlertsTask = new GetAlertsTask(f);
                 getAlertsTask.execute(getResources().getString(R.string.mfl_key),
                         getResources().getString(R.string.bsl_key));
+                GetTripsTask getTripsTask = new GetTripsTask(f);
+                getTripsTask.execute("udid="+UDID);
             }
         });
 
@@ -153,6 +161,22 @@ public class HomeFragment extends Fragment
                 alertTextView.setText(R.string.advisory_failed);
             }
 
+            swipeContainer.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void asyncTripResponse(ArrayList<Trip> response) {
+        if(this.isVisible()) {
+            if(response.size() > 0) {
+                Trip t = response.get(0);
+                String tripString = t.getStart().getName() + " " +
+                        t.getStartTime().toString() + " \n" +
+                        t.getEnd().getName() + " " +
+                        t.getEndTime().toString();
+                TextView tripTextView = (TextView)getActivity().findViewById(R.id.past_trips);
+                tripTextView.setText(tripString);
+            }
             swipeContainer.setRefreshing(false);
         }
     }

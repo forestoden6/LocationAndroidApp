@@ -19,7 +19,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.forestoden.locationservices.globals.Constants.StationMap;
 import static com.forestoden.locationservices.globals.Constants.UDID;
 
 /**
@@ -53,12 +52,12 @@ public class SaveCompletedTripTask extends AsyncTask<Trip, Integer, String> {
 
         for(Trip t : trips) {
             try {
-                Station originStation = StationMap.get(t.getStart().getRequestId());
+                Station originStation = t.getStart();
                 int origin = originStation.getID();
                 Date departDate = t.getStartTime();
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 String depart = dateFormat.format(departDate);
-                Station destinationStation = StationMap.get(t.getEnd().getRequestId());
+                Station destinationStation = t.getEnd();
                 int destination = destinationStation.getID();
                 Date arriveDate = t.getEndTime();
                 String arrive = dateFormat.format(arriveDate);

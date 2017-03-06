@@ -27,6 +27,7 @@ public class Constants {
     public static List<Station> STATIONS = new ArrayList<>();
 
     public static HashMap<String, Station> StationMap = new HashMap<>();
+    public static HashMap<Integer, String> StationIDMap = new HashMap<>();
 
     public List<Station> getStationLocations(){
         return STATIONS;
