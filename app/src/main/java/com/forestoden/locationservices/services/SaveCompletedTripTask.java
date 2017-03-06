@@ -66,7 +66,7 @@ public class SaveCompletedTripTask extends AsyncTask<Trip, Integer, String> {
                            "&origin=" + String.valueOf(origin) +
                            "&depart=" + depart +
                            "&destination=" + String.valueOf(destination) +
-                           "&arrive=" + arrive;
+                           "&arrival=" + arrive;
 
                 Log.d(TAG, s);
 
