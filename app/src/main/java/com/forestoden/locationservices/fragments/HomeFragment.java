@@ -84,11 +84,11 @@ public class HomeFragment extends Fragment
         View inflatedView = inflater.inflate(R.layout.fragment_home, container, false);
 
         TextView predictionText = (TextView)inflatedView.findViewById(R.id.prediction);
-        predictionText.setText("Not implemented.");
-        TextView alertText = (TextView)inflatedView.findViewById(R.id.alerts);
+        predictionText.setText("Prediction will be displayed here.");
+        /*TextView alertText = (TextView)inflatedView.findViewById(R.id.alerts);
         alertText.setText("Not implemented.");
         TextView tripText = (TextView)inflatedView.findViewById(R.id.past_trips);
-        tripText.setText("Not implemented.");
+        tripText.setText("Not implemented.");*/
         // Inflate the layout for this fragment
         return inflatedView;
     }
