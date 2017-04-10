@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -54,18 +55,25 @@ public class GeofenceTransitionsIntentService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        GeofencingEvent event = GeofencingEvent.fromIntent(intent);
-        if(event.hasError()) {
-            Log.e(TAG, "GeofencingEvent Error: " + event.getErrorCode());
-            return;
-        }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean track = preferences.getBoolean("track_trip", true);
 
-        String description = getGeofenceTransitionDetails(event);
-        Log.i(TAG, description);
+        Log.d(TAG, "Tracking: " + track);
+
+        if(track) {
+            GeofencingEvent event = GeofencingEvent.fromIntent(intent);
+            if(event.hasError()) {
+                Log.e(TAG, "GeofencingEvent Error: " + event.getErrorCode());
+                return;
+            }
+
+            String description = getGeofenceTransitionDetails(event);
+            Log.i(TAG, description);
         /*if(tripTimerTask == null) {
             tripTimerTask
             Log.d(TAG, "Trip Task created.");
         }*/
+        }
     }
 
     /**
