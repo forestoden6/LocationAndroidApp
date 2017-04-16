@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:padding="5sp">
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/trip_entry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:gravity="center_vertical"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingLeft="10dp"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingRight="10dp"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/trip_menu"
+        android:layout_toRightOf="@id/trip_entry"
+        android:src="@drawable/more_button"
+        android:onClick="showPopup" />
+
+</RelativeLayout>

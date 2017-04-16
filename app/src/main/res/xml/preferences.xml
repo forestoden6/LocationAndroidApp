@@ -6,7 +6,7 @@
 
         <SwitchPreference
             android:defaultValue="true"
-            android:key="checkbox_preference"
+            android:key="track_trip"
             android:title="@string/trip_tracking"
             android:summary="@string/trip_tracking_summary" />
 

@@ -35,7 +35,7 @@ import static com.forestoden.locationservices.globals.Constants.StationMap;
 
 public class GetTripsTask extends AsyncTask<String, Integer, ArrayList<Trip>> {
 
-    private static final String TAG = GetAlertsTask.class.getName();
+    private static final String TAG = GetTripsTask.class.getName();
 
     private HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -68,7 +68,7 @@ public class GetTripsTask extends AsyncTask<String, Integer, ArrayList<Trip>> {
                 response = request.execute();
                 String responseString = response.parseAsString();
 
-                Log.d(TAG, responseString);
+                //Log.d(TAG, responseString);
 
                 if(responseString != null) {
                     JSONArray tripJson = new JSONArray(responseString);
@@ -79,6 +79,7 @@ public class GetTripsTask extends AsyncTask<String, Integer, ArrayList<Trip>> {
                             int startID = Integer.parseInt((String) tripJsonObject.get("id_station_origin"));
                             int endID = Integer.parseInt((String) tripJsonObject.get("id_station_destination"));
                             Station start = StationMap.get(StationIDMap.get(startID));
+                            //Log.d(TAG, start.getName());
                             Station end = StationMap.get(StationIDMap.get(endID));
                             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                             Date startDate = dateFormat.parse((String)tripJsonObject.get("time_departure"));

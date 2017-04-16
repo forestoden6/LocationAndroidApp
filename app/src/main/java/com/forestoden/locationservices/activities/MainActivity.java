@@ -31,6 +31,8 @@ import android.widget.Toast;
 import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.fragments.HomeFragment;
 import com.forestoden.locationservices.fragments.Mapfragment;
+import com.forestoden.locationservices.fragments.PastTripsFragment;
+import com.forestoden.locationservices.fragments.PredictionFragment;
 import com.forestoden.locationservices.fragments.ScheduleFragment;
 import com.forestoden.locationservices.fragments.ServiceAdvisoryFragment;
 import com.forestoden.locationservices.fragments.SettingsFragment;
@@ -77,7 +79,9 @@ public class MainActivity extends AppCompatActivity implements
         Mapfragment.OnFragmentInteractionListener,
         ScheduleFragment.OnFragmentInteractionListener,
         ServiceAdvisoryFragment.OnFragmentInteractionListener,
-        SettingsFragment.OnFragmentInteractionListener {
+        SettingsFragment.OnFragmentInteractionListener,
+        PredictionFragment.OnFragmentInteractionListener,
+        PastTripsFragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_FINE_LOCATION = 0;
     private static final int REQUEST_INTERNET = 1;
@@ -200,6 +204,17 @@ public class MainActivity extends AppCompatActivity implements
                 mActivityTitle = this.getString(R.string.home);
                 break;
             case 1:
+                try {
+                    fragment = PredictionFragment.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                        .commit();
+
+                mActivityTitle = this.getString(R.string.prediction);
+                break;
+            case 2:
                 Mapfragment mapfragment = null;
                 android.support.v4.app.FragmentManager supportFragmentManager = getSupportFragmentManager();
                 try {
@@ -243,9 +258,9 @@ public class MainActivity extends AppCompatActivity implements
 
                 //Toast.makeText(MainActivity.this, "This should be a map!", Toast.LENGTH_SHORT).show();
                 break;
-            case 2:
+            case 3:
                 try {
-                    fragment = (Fragment) ScheduleFragment.newInstance();
+                    fragment = ScheduleFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -254,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 mActivityTitle = this.getString(R.string.schedule);
                 break;
-            case 3:
+            case 4:
                 try {
                     fragment = ServiceAdvisoryFragment.newInstance();
                 } catch (Exception e) {
@@ -266,7 +281,18 @@ public class MainActivity extends AppCompatActivity implements
 
                 mActivityTitle = this.getString(R.string.service_advisories);
                 break;
-            case 4:
+            case 5:
+                try {
+                    fragment = PastTripsFragment.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                        .commit();
+
+                mActivityTitle = this.getString(R.string.past_trips);
+                break;
+            case 6:
                 /*try {
                     fragment = (Fragment) SettingsFragment.newInstance();
                 } catch (Exception e) {
@@ -290,6 +316,11 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setTitle(mActivityTitle);
 
 
+    }
+
+    public void setActionBarTitle(String title) {
+        mActivityTitle = title;
+        getSupportActionBar().setTitle(mActivityTitle);
     }
 //        Fragment fragement = new Mapfragment();
 //        Bundle args = new Bundle();
@@ -397,7 +428,6 @@ public class MainActivity extends AppCompatActivity implements
                     int id = Integer.parseInt((String) stationJsonObject.get("id_station"));
                     String address = stationJsonObject.getString("address");
                     String line = stationJsonObject.getString("line");
-                    /* TODO: IDs and Address are placeholders for now. MUST ADD! */
                     Station station = new Station(id, name, address, new LatLng(latitude, longitude), line);
                     STATIONS.add(station);
                     StationMap.put(name, station);

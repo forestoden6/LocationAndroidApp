@@ -56,11 +56,11 @@ public class GeofenceTransitionsIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean track = preferences.getBoolean("track_trip", true);
+        boolean trackingEnabled = preferences.getBoolean("track_trip", true);
 
-        Log.d(TAG, "Tracking: " + track);
+        Log.d(TAG, "Tracking: " + trackingEnabled);
 
-        if(track) {
+        if(trackingEnabled) {
             GeofencingEvent event = GeofencingEvent.fromIntent(intent);
             if(event.hasError()) {
                 Log.e(TAG, "GeofencingEvent Error: " + event.getErrorCode());

@@ -20,6 +20,9 @@ public class Trip {
     private int id;
 
     private boolean newTrip = true;
+    private boolean isSelected;
+
+
 
     public Trip() {
 
@@ -85,6 +88,23 @@ public class Trip {
         //setStart(null, null);
         //setEnd(null, null);
         newTrip = true;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    @Override
+    public String toString() {
+        String tripString = getStart().getName() + " " +
+                getStartTime().toString() + " \n" +
+                getEnd().getName() + " " +
+                getEndTime().toString();
+        return tripString;
     }
 
 }

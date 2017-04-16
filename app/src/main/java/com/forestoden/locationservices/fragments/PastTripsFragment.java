@@ -5,14 +5,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.model.Trip;
-import com.forestoden.locationservices.services.GetAlertsTask;
+import com.forestoden.locationservices.model.TripAdapter;
 import com.forestoden.locationservices.services.GetTripsTask;
 
 import java.util.ArrayList;
@@ -22,16 +25,20 @@ import static com.forestoden.locationservices.globals.Constants.UDID;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HomeFragment.OnFragmentInteractionListener} interface
+ * {@link PastTripsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
+ * Use the {@link PastTripsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment
-    implements GetAlertsTask.OnAsyncRequestComplete ,
-    GetTripsTask.OnAsyncRequestComplete {
+public class PastTripsFragment extends Fragment
+    implements GetTripsTask.OnAsyncRequestComplete,
+        View.OnClickListener {
 
-    private static final String TAG = HomeFragment.class.getName();
+    private static final String TAG = PastTripsFragment.class.getName();
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,7 +53,7 @@ public class HomeFragment extends Fragment
 
     private SwipeRefreshLayout swipeContainer;
 
-    public HomeFragment() {
+    public PastTripsFragment() {
         // Required empty public constructor
     }
 
@@ -54,15 +61,15 @@ public class HomeFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment HomeFragment.
+     * @return A new instance of fragment PastTripsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(/*String param1, String param2*/) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        /*args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);*/
-        fragment.setArguments(args);
+    public static PastTripsFragment newInstance() {
+        PastTripsFragment fragment = new PastTripsFragment();
+        /*Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);*/
         return fragment;
     }
 
@@ -73,50 +80,21 @@ public class HomeFragment extends Fragment
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        new GetAlertsTask(this).execute(getResources().getString(R.string.mfl_key),
-                getResources().getString(R.string.bsl_key));
         new GetTripsTask(this).execute("udid="+UDID);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View inflatedView = inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_past_trips, container, false);
 
-        TextView predictionText = (TextView)inflatedView.findViewById(R.id.prediction);
-        predictionText.setText("Prediction will be displayed here.");
-        /*TextView alertText = (TextView)inflatedView.findViewById(R.id.alerts);
-        alertText.setText("Not implemented.");
-        TextView tripText = (TextView)inflatedView.findViewById(R.id.past_trips);
-        tripText.setText("Not implemented.");*/
-        // Inflate the layout for this fragment
-        return inflatedView;
-    }
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.past_trips_recycler);
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.homeSwipeContainer);
+        mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
-        final Fragment f = this;
 
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //Asynchronously get service alerts and update text views
-                GetAlertsTask getAlertsTask = new GetAlertsTask(f);
-                getAlertsTask.execute(getResources().getString(R.string.mfl_key),
-                        getResources().getString(R.string.bsl_key));
-                GetTripsTask getTripsTask = new GetTripsTask(f);
-                getTripsTask.execute("udid="+UDID);
-            }
-        });
-
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -124,6 +102,28 @@ public class HomeFragment extends Fragment
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.tripsSwipeContainer);
+
+        final Fragment f = this;
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //Asynchronously get Past Trips  and update text views
+                GetTripsTask getTripsTask = new GetTripsTask(f);
+                getTripsTask.execute("udid="+UDID);
+                Log.d(TAG, UDID);
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     @Override
@@ -144,43 +144,34 @@ public class HomeFragment extends Fragment
     }
 
     @Override
-    public void asyncResponse(ArrayList<String> response) {
-        if (this.isVisible()) {
-            if(response.size() == 4) {
-                String mflAlert = response.get(0);
-                String bslAlert = response.get(2);
+    public void asyncTripResponse(ArrayList<Trip> response) {
+        /*Trip[] trips = response.toArray(new Trip[response.size()]);
+        ArrayAdapter<Trip> adapter = new ArrayAdapter<Trip>(getActivity().getApplicationContext(),
+                android.R.layout.simple_list_item_1, trips);*/
 
-                if (mflAlert.isEmpty() && bslAlert.isEmpty()) {
-                    TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
-                    alertTextView.setText(R.string.no_alerts);
-                } else {
-                    TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
-                    alertTextView.setText(mflAlert + bslAlert);
-                }
-            } else {
-                TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
-                alertTextView.setText(R.string.advisory_failed);
-            }
+        Fragment f = this;
 
-            swipeContainer.setRefreshing(false);
-        }
+        mAdapter = new TripAdapter(response, f);
+        mRecyclerView.setAdapter(mAdapter);
+
+        /*ListView listView = (ListView) getActivity().findViewById(R.id.past_trips_list);
+        listView.setAdapter(adapter);*/
+
+        /*View rootView = getView();
+
+        ImageButton menu = (ImageButton) rootView.findViewById(R.id.trip_menu);
+        menu.setOnClickListener(this);*/
+
+        swipeContainer.setRefreshing(false);
     }
 
     @Override
-    public void asyncTripResponse(ArrayList<Trip> response) {
-        if(this.isVisible()) {
-            if(response.size() > 0) {
-                Trip t = response.get(0);
-                /*String tripString = t.getStart().getName() + " " +
-                        t.getStartTime().toString() + " \n" +
-                        t.getEnd().getName() + " " +
-                        t.getEndTime().toString();*/
-                String tripString = t.toString();
-                TextView tripTextView = (TextView)getActivity().findViewById(R.id.past_trips);
-                tripTextView.setText(tripString);
-            }
-            swipeContainer.setRefreshing(false);
-        }
+    public void onClick(View v) {
+        Toast.makeText(getActivity().getApplicationContext(), "Test", Toast.LENGTH_LONG).show();
+    }
+
+    public void showPopup(View v) {
+
     }
 
     /**
