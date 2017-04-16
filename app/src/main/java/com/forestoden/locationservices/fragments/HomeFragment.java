@@ -4,7 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,14 +39,10 @@ public class HomeFragment extends Fragment
 
     private static final String TAG = HomeFragment.class.getName();
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -56,8 +58,7 @@ public class HomeFragment extends Fragment
      *
      * @return A new instance of fragment HomeFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(/*String param1, String param2*/) {
+    public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         /*args.putString(ARG_PARAM1, param1);
@@ -69,28 +70,94 @@ public class HomeFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-        new GetAlertsTask(this).execute(getResources().getString(R.string.mfl_key),
-                getResources().getString(R.string.bsl_key));
-        new GetTripsTask(this).execute("udid="+UDID);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        new GetAlertsTask(this).execute(getResources().getString(R.string.mfl_key),
+                getResources().getString(R.string.bsl_key));
+        new GetTripsTask(this).execute("udid="+UDID);
+        
         View inflatedView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        CardView predictionCard = (CardView) inflatedView.findViewById(R.id.prediction_card);
+        predictionCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new PredictionFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.left_in, R.anim.right_out,
+                        R.anim.left_in, R.anim.right_out);
+
+                fragmentTransaction.replace(R.id.fragment_container, fragment)
+                        .addToBackStack("prediction");
+                fragmentTransaction.commit();
+
+
+                ActionBar mActionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+                mActionBar.setTitle(getResources().getString(R.string.prediction));
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        });
+
+        CardView alertsCard = (CardView) inflatedView.findViewById(R.id.alerts_card);
+        alertsCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new ServiceAdvisoryFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.left_in, R.anim.right_out,
+                        R.anim.left_in, R.anim.right_out);
+
+                fragmentTransaction.replace(R.id.fragment_container, fragment)
+                        .addToBackStack("alerts");
+                fragmentTransaction.commit();
+
+                ActionBar mActionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+                mActionBar.setTitle(getResources().getString(R.string.alerts));
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        });
+
+        CardView pastTripsCard = (CardView) inflatedView.findViewById(R.id.past_trips_card);
+        pastTripsCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new PastTripsFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.left_in, R.anim.right_out,
+                        R.anim.left_in, R.anim.right_out);
+
+                fragmentTransaction.replace(R.id.fragment_container, fragment)
+                        .addToBackStack("past_trips");
+                fragmentTransaction.commit();
+
+
+                ActionBar mActionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+                mActionBar.setTitle(getResources().getString(R.string.past_trips));
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        });
+
 
         TextView predictionText = (TextView)inflatedView.findViewById(R.id.prediction);
         predictionText.setText("Prediction will be displayed here.");
-        /*TextView alertText = (TextView)inflatedView.findViewById(R.id.alerts);
-        alertText.setText("Not implemented.");
-        TextView tripText = (TextView)inflatedView.findViewById(R.id.past_trips);
-        tripText.setText("Not implemented.");*/
-        // Inflate the layout for this fragment
+
+        ActionBar mActionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+        mActionBar.setTitle(getResources().getString(R.string.title_activity_home));
+
         return inflatedView;
     }
 
@@ -117,13 +184,6 @@ public class HomeFragment extends Fragment
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override

@@ -4,118 +4,119 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        tools:context="com.forestoden.locationservices.fragments.HomeFragment">
-
-        <RelativeLayout
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:id="@+id/prediction_layout">
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/prediction_card"
-                android:layout_gravity="center"
-                card_view:cardUseCompatPadding="true"
-                card_view:contentPadding="5dp"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            tools:context="com.forestoden.locationservices.fragments.HomeFragment">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                card_view:cardBackgroundColor="#efefef"
-                card_view:cardCornerRadius="4dp">
-                <RelativeLayout
+                android:id="@+id/prediction_layout">
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/prediction_card"
+                    android:clickable="false"
+                    android:layout_gravity="center"
+                    card_view:cardUseCompatPadding="true"
+                    card_view:contentPadding="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/prediction"
-                        android:typeface="serif"
-                        android:fontFamily=""
-                        android:textSize="36dp"
-                        android:id="@+id/prediction_title"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/prediction_title"
-                        android:id="@+id/prediction"/>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-        </RelativeLayout>
+                    android:layout_height="200dp"
+                    card_view:cardBackgroundColor="#efefef"
+                    card_view:cardCornerRadius="4dp">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/prediction"
+                            android:typeface="serif"
+                            android:fontFamily=""
+                            android:textSize="36dp"
+                            android:id="@+id/prediction_title"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/prediction_title"
+                            android:id="@+id/prediction"/>
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:id="@+id/alerts_layout"
-            android:layout_below="@id/prediction_layout">
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/alerts_card"
-                android:layout_gravity="center"
-                card_view:cardUseCompatPadding="true"
-                card_view:contentPadding="5dp"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                card_view:cardBackgroundColor="#efefef"
-                card_view:cardCornerRadius="4dp">
-                <RelativeLayout
+                android:id="@+id/alerts_layout"
+                android:layout_below="@id/prediction_layout">
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/alerts_card"
+                    android:layout_gravity="center"
+                    card_view:cardUseCompatPadding="true"
+                    card_view:contentPadding="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:text="@string/alerts"
-                    android:typeface="serif"
-                    android:fontFamily=""
-                    android:textSize="36dp"
-                    android:id="@+id/alerts_title"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/alerts_title"
-                    android:id="@+id/alerts"/>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:id="@+id/past_trips_layout"
-            android:layout_below="@id/alerts_layout">
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/past_trips_card"
-                android:layout_gravity="center"
-                card_view:cardUseCompatPadding="true"
-                card_view:contentPadding="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                card_view:cardBackgroundColor="#efefef"
-                card_view:cardCornerRadius="4dp">
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="200dp"
+                    card_view:cardBackgroundColor="#efefef"
+                    card_view:cardCornerRadius="4dp">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
-                        android:text="@string/past_trips"
+                        android:text="@string/alerts"
                         android:typeface="serif"
                         android:fontFamily=""
                         android:textSize="36dp"
-                        android:id="@+id/past_trips_title"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/past_trips_title"
-                    android:id="@+id/past_trips"/>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
+                        android:id="@+id/alerts_title"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/alerts_title"
+                        android:id="@+id/alerts"/>
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/past_trips_layout"
+                android:layout_below="@id/alerts_layout">
+                <android.support.v7.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/past_trips_card"
+                    android:layout_gravity="center"
+                    card_view:cardUseCompatPadding="true"
+                    card_view:contentPadding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    card_view:cardBackgroundColor="#efefef"
+                    card_view:cardCornerRadius="4dp">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:text="@string/past_trips"
+                            android:typeface="serif"
+                            android:fontFamily=""
+                            android:textSize="36dp"
+                            android:id="@+id/past_trips_title"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/past_trips_title"
+                        android:id="@+id/past_trips"/>
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+            </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

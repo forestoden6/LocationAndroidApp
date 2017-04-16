@@ -81,7 +81,8 @@ public class MainActivity extends AppCompatActivity implements
         ServiceAdvisoryFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
         PredictionFragment.OnFragmentInteractionListener,
-        PastTripsFragment.OnFragmentInteractionListener {
+        PastTripsFragment.OnFragmentInteractionListener ,
+        android.support.v4.app.FragmentManager.OnBackStackChangedListener{
 
     private static final int REQUEST_FINE_LOCATION = 0;
     private static final int REQUEST_INTERNET = 1;
@@ -128,6 +129,9 @@ public class MainActivity extends AppCompatActivity implements
         //Set click listener to get menu selection
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+        //Listen for changes in the backstack
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+        //shouldDisplayHomeUp();
 
         createGoogleApiClient();
 
@@ -174,9 +178,26 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void shouldDisplayHomeUp() {
+        //Enable up button if there are items in back stack
+        boolean back = getSupportFragmentManager().getBackStackEntryCount() > 0;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(back);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        getSupportFragmentManager().popBackStack();
+        return true;
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
         //This can be empty unless we need to communicate between fragments.
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        //shouldDisplayHomeUp();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -207,12 +228,15 @@ public class MainActivity extends AppCompatActivity implements
                 mActivityTitle = this.getString(R.string.home);
                 break;
             case 1:
+                supportFragment = null;
+                supportFragmentManager = getSupportFragmentManager();
+
                 try {
-                    fragment = PredictionFragment.newInstance();
+                    supportFragment = PredictionFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
                         .commit();
 
                 mActivityTitle = this.getString(R.string.prediction);
@@ -238,8 +262,13 @@ public class MainActivity extends AppCompatActivity implements
                 //Mapfragment.setUserMarker(new LatLng(mLocation.getLatitude(),mLocation.getLongitude()));
 
                 Bundle latLngBundle = new Bundle();
-                latLngBundle.putDouble("lat", mLocation.getLatitude());
-                latLngBundle.putDouble("long", mLocation.getLongitude());
+                if (mLocation != null) {
+                    latLngBundle.putDouble("lat", mLocation.getLatitude());
+                    latLngBundle.putDouble("long", mLocation.getLongitude());
+                } else {
+                    latLngBundle.putDouble("lat", 39.954821);
+                    latLngBundle.putDouble("long", -75.183123);
+                }
 
                 mapfragment.setArguments(latLngBundle);
 
@@ -326,11 +355,6 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setTitle(mActivityTitle);
 
 
-    }
-
-    public void setActionBarTitle(String title) {
-        mActivityTitle = title;
-        getSupportActionBar().setTitle(mActivityTitle);
     }
 //        Fragment fragement = new Mapfragment();
 //        Bundle args = new Bundle();
@@ -467,6 +491,10 @@ public class MainActivity extends AppCompatActivity implements
                             | Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build());
         }
+    }
+
+    public void launchPredictionFragment(View view) {
+
     }
 
     //public void addGeofencesButtonHandler(View view){
