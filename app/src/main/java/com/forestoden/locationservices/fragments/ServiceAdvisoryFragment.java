@@ -1,19 +1,18 @@
 package com.forestoden.locationservices.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.forestoden.locationservices.R;
-import com.forestoden.locationservices.services.GetAlertsTask;
-
-import java.util.ArrayList;
+import com.forestoden.locationservices.model.ServiceAdvisoryPagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,14 +22,9 @@ import java.util.ArrayList;
  * Use the {@link ServiceAdvisoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ServiceAdvisoryFragment extends Fragment
-    implements GetAlertsTask.OnAsyncRequestComplete {
+public class ServiceAdvisoryFragment extends Fragment {
     private static final String TAG = ServiceAdvisoryFragment.class.getName();
 
-    private String mflAlert;
-    private String mflAdvisory;
-    private String bslAlert;
-    private String bslAdvisory;
 
     private OnFragmentInteractionListener mListener;
 
@@ -61,11 +55,8 @@ public class ServiceAdvisoryFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Asynchronously get service alerts and update text views
-        new GetAlertsTask(this).execute(getResources().getString(R.string.mfl_key),
-                getResources().getString(R.string.bsl_key));
 
-        //getActivity().setContentView(R.layout.activity_main);
+
     }
 
 
@@ -76,32 +67,40 @@ public class ServiceAdvisoryFragment extends Fragment
         View inflateView = inflater.inflate(R.layout.fragment_service_advisory,
                container, false);
 
-
-
         return inflater.inflate(R.layout.fragment_service_advisory,
                 container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.advisorySwipeContainer);
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.mfl)));
+        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.bsl)));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final Fragment f = this;
+        final ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
 
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        final ServiceAdvisoryPagerAdapter pagerAdapter =
+                new ServiceAdvisoryPagerAdapter(getFragmentManager());
+
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onRefresh() {
-                //Asynchronously get service alerts and update text views
-                GetAlertsTask getAlertsTask = new GetAlertsTask(f);
-                getAlertsTask.execute(getResources().getString(R.string.mfl_key),
-                        getResources().getString(R.string.bsl_key));
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
-
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
     }
 
 
@@ -128,31 +127,6 @@ public class ServiceAdvisoryFragment extends Fragment
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void asyncResponse(ArrayList<String> response) {
-        if (this.isVisible()) {
-            if (response.size() == 4) {
-                mflAlert = response.get(0);
-                mflAdvisory = response.get(1);
-                bslAlert = response.get(2);
-                bslAdvisory = response.get(3);
-
-                TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
-                mflAlertTextView.setText(mflAlert + mflAdvisory);
-                TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
-                bslAlertTextView.setText(bslAlert + bslAdvisory);
-            }
-            else {
-                TextView mflAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_mfl);
-                mflAlertTextView.setText(R.string.advisory_failed);
-                TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
-                bslAlertTextView.setText(R.string.advisory_failed);
-            }
-
-            swipeContainer.setRefreshing(false);
-        }
     }
 
     /**

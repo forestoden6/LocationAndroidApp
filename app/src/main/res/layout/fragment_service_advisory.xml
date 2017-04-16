@@ -1,53 +1,20 @@
-<android.support.v4.widget.SwipeRefreshLayout
+<RelativeLayout android:id="@+id/service_advisory"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/advisorySwipeContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="5sp"
-            tools:context="com.forestoden.locationservices.fragments.ServiceAdvisoryFragment">
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-            <TextView
-                android:id="@+id/service_mfl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mfl"
-                android:textSize="20sp"
-            />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/tab_layout"/>
 
-            <TextView
-                android:id="@+id/alerts_mfl"
-                android:layout_below="@id/service_mfl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                />
-
-            <TextView
-                android:id="@+id/service_bsl"
-                android:layout_below="@id/alerts_mfl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bsl"
-                android:textSize="20sp"
-            />
-
-            <TextView
-                android:id="@+id/alerts_bsl"
-                android:layout_below="@id/service_bsl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                />
-
-        </RelativeLayout>
-    </ScrollView>
-</android.support.v4.widget.SwipeRefreshLayout>
+</RelativeLayout>

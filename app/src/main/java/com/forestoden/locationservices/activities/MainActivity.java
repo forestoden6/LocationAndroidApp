@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //Create and display Home Fragment
         HomeFragment homeFragment = HomeFragment.newInstance();
-        getFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, homeFragment)
                 .commit();
@@ -193,12 +193,15 @@ public class MainActivity extends AppCompatActivity implements
         FragmentManager fragmentManager = getFragmentManager();
         switch (position) {
             case 0:
+                android.support.v4.app.Fragment supportFragment = null;
+                android.support.v4.app.FragmentManager supportFragmentManager = getSupportFragmentManager();
+
                 try {
-                    fragment = HomeFragment.newInstance();
+                    supportFragment = HomeFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
                         .commit();
 
                 mActivityTitle = this.getString(R.string.home);
@@ -216,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case 2:
                 Mapfragment mapfragment = null;
-                android.support.v4.app.FragmentManager supportFragmentManager = getSupportFragmentManager();
+                supportFragmentManager = getSupportFragmentManager();
                 try {
                     mapfragment = Mapfragment.newInstance();
                 } catch (Exception e) {
@@ -270,24 +273,31 @@ public class MainActivity extends AppCompatActivity implements
                 mActivityTitle = this.getString(R.string.schedule);
                 break;
             case 4:
+                supportFragment = null;
+                supportFragmentManager = getSupportFragmentManager();
+
                 try {
-                    fragment = ServiceAdvisoryFragment.newInstance();
+                    supportFragment = ServiceAdvisoryFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                //fragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
                         .commit();
 
                 mActivityTitle = this.getString(R.string.service_advisories);
                 break;
             case 5:
+                supportFragment = null;
+                supportFragmentManager = getSupportFragmentManager();
+
                 try {
-                    fragment = PastTripsFragment.newInstance();
+                    supportFragment = PastTripsFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
                         .commit();
 
                 mActivityTitle = this.getString(R.string.past_trips);
