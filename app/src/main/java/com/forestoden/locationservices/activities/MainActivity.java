@@ -1,8 +1,6 @@
 package com.forestoden.locationservices.activities;
 
 import android.Manifest;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +12,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -211,39 +212,32 @@ public class MainActivity extends AppCompatActivity implements
     private void selectItem(int position) {
         //TODO: Want to refactor for 5.0 Menu maybe, how to keep backwards compat?
         Fragment fragment = null;
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         switch (position) {
             case 0:
-                android.support.v4.app.Fragment supportFragment = null;
-                android.support.v4.app.FragmentManager supportFragmentManager = getSupportFragmentManager();
-
                 try {
-                    supportFragment = HomeFragment.newInstance();
+                    fragment = HomeFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
 
                 mActivityTitle = this.getString(R.string.home);
                 break;
             case 1:
-                supportFragment = null;
-                supportFragmentManager = getSupportFragmentManager();
-
                 try {
-                    supportFragment = PredictionFragment.newInstance();
+                    fragment = PredictionFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                         .commit();
 
                 mActivityTitle = this.getString(R.string.prediction);
                 break;
             case 2:
                 Mapfragment mapfragment = null;
-                supportFragmentManager = getSupportFragmentManager();
                 try {
                     mapfragment = Mapfragment.newInstance();
                 } catch (Exception e) {
@@ -272,8 +266,12 @@ public class MainActivity extends AppCompatActivity implements
 
                 mapfragment.setArguments(latLngBundle);
 
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, mapfragment)
-                        .commit();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.left_in, R.anim.right_out,
+                        R.anim.left_in, R.anim.right_out);
+
+                fragmentTransaction.replace(R.id.fragment_container, mapfragment);
+                fragmentTransaction.commit();
 
                 mActivityTitle = this.getString(R.string.map);
 
@@ -296,52 +294,49 @@ public class MainActivity extends AppCompatActivity implements
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
-                        .commit();
+
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.left_in, R.anim.right_out,
+                        R.anim.left_in, R.anim.right_out);
+
+                fragmentTransaction.replace(R.id.fragment_container, fragment);
+                fragmentTransaction.commit();
 
                 mActivityTitle = this.getString(R.string.schedule);
                 break;
             case 4:
-                supportFragment = null;
-                supportFragmentManager = getSupportFragmentManager();
-
                 try {
-                    supportFragment = ServiceAdvisoryFragment.newInstance();
+                    fragment = ServiceAdvisoryFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                //fragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
-                        .commit();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.left_in, R.anim.right_out,
+                        R.anim.left_in, R.anim.right_out);
+
+                fragmentTransaction.replace(R.id.fragment_container, fragment);
+                fragmentTransaction.commit();
 
                 mActivityTitle = this.getString(R.string.service_advisories);
                 break;
             case 5:
-                supportFragment = null;
-                supportFragmentManager = getSupportFragmentManager();
-
                 try {
-                    supportFragment = PastTripsFragment.newInstance();
+                    fragment = PastTripsFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                supportFragmentManager.beginTransaction().replace(R.id.fragment_container, supportFragment)
-                        .commit();
+
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.left_in, R.anim.right_out,
+                        R.anim.left_in, R.anim.right_out);
+
+                fragmentTransaction.replace(R.id.fragment_container, fragment);
+                fragmentTransaction.commit();
 
                 mActivityTitle = this.getString(R.string.past_trips);
                 break;
             case 6:
-                /*try {
-                    fragment = (Fragment) SettingsFragment.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
-                        .commit();*/
-
-                //fragmentManager = getSupportFragmentManager();
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new SettingsFragment())
                         .commit();
