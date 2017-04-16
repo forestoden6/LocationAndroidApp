@@ -120,7 +120,7 @@ public class MFLServiceAdvisoryFragment extends Fragment
                 if (!mflAlert.trim().isEmpty() || !mflAdvisory.trim().isEmpty()) {
                     mflAlertTextView.setText(mflAlert + mflAdvisory);
                 } else {
-                    mflAlertTextView.setText("No alerts at this time!");
+                    mflAlertTextView.setText(getResources().getString(R.string.no_alerts));
                 }
             }
             else {

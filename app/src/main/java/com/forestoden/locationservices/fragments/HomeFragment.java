@@ -155,7 +155,11 @@ public class HomeFragment extends Fragment
                     alertTextView.setText(R.string.no_alerts);
                 } else {
                     TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);
-                    alertTextView.setText(mflAlert + bslAlert);
+                    if (!mflAlert.trim().isEmpty() || !bslAlert.trim().isEmpty()) {
+                        alertTextView.setText(mflAlert + bslAlert);
+                    } else {
+                        alertTextView.setText(getResources().getString(R.string.no_alerts));
+                    }
                 }
             } else {
                 TextView alertTextView = (TextView)getActivity().findViewById(R.id.alerts);

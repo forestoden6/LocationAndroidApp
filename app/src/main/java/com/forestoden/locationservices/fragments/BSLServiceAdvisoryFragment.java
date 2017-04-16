@@ -118,7 +118,7 @@ public class BSLServiceAdvisoryFragment extends Fragment
                 if (!bslAlert.trim().isEmpty() || !bslAdvisory.trim().isEmpty()) {
                     bslAlertTextView.setText(bslAlert + bslAdvisory);
                 } else {
-                    bslAlertTextView.setText("No alerts at this time!");
+                    bslAlertTextView.setText(getResources().getString(R.string.no_alerts));
                 }
             }
             else {
