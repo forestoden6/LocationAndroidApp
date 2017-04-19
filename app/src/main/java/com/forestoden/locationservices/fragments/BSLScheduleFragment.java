@@ -4,39 +4,39 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.forestoden.locationservices.R;
-import com.forestoden.locationservices.services.GetAlertsTask;
+import com.forestoden.locationservices.model.Schedule;
+import com.forestoden.locationservices.services.GetScheduleTask;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BSLServiceAdvisoryFragment.OnFragmentInteractionListener} interface
+ * {@link BSLScheduleFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link BSLServiceAdvisoryFragment#newInstance} factory method to
+ * Use the {@link BSLScheduleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BSLServiceAdvisoryFragment extends Fragment
-        implements GetAlertsTask.OnAsyncRequestComplete {
+public class BSLScheduleFragment extends Fragment
+    implements GetScheduleTask.OnAsyncRequestComplete{
 
-    private static final String TAG = BSLServiceAdvisoryFragment.class.getName();
+    private static final String TAG = BSLScheduleFragment.class.getName();
 
     private OnFragmentInteractionListener mListener;
-
-    private String bslAlert;
-    private String bslAdvisory;
 
     private SwipeRefreshLayout swipeContainer;
 
 
-    public BSLServiceAdvisoryFragment() {
+    public BSLScheduleFragment() {
         // Required empty public constructor
     }
 
@@ -44,10 +44,10 @@ public class BSLServiceAdvisoryFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment BSLServiceAdvisoryFragment.
+     * @return A new instance of fragment BSLScheduleFragment.
      */
-    public static BSLServiceAdvisoryFragment newInstance() {
-        BSLServiceAdvisoryFragment fragment = new BSLServiceAdvisoryFragment();
+    public static BSLScheduleFragment newInstance() {
+        BSLScheduleFragment fragment = new BSLScheduleFragment();
 
         return fragment;
     }
@@ -56,30 +56,28 @@ public class BSLServiceAdvisoryFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new GetAlertsTask(this).execute(getResources().getString(R.string.bsl_key));
-
-
+        new GetScheduleTask(this).execute(new Pair<>(106, 194));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bslservice_advisory, container, false);
+        return inflater.inflate(R.layout.fragment_bslschedule, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.advisorySwipeContainer);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.scheduleSwipeContainer);
 
         final Fragment f = this;
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //Asynchronously get service alerts and update text views
-                GetAlertsTask getAlertsTask = new GetAlertsTask(f);
-                getAlertsTask.execute(getResources().getString(R.string.bsl_key));
+                //Asynchronously get schedules and update text views
+                GetScheduleTask getScheduleTask = new GetScheduleTask(f);
+                getScheduleTask.execute(new Pair<>(106, 194));
             }
         });
 
@@ -92,7 +90,6 @@ public class BSLServiceAdvisoryFragment extends Fragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
     }
 
     @Override
@@ -102,22 +99,14 @@ public class BSLServiceAdvisoryFragment extends Fragment
     }
 
     @Override
-    public void asyncResponse(ArrayList<String> response) {
+    public void asyncResponse(ArrayList<Schedule> response) {
         if (this.isVisible()) {
-            if (response.size() == 2) {
-                bslAlert = response.get(0);
-                bslAdvisory = response.get(1);
+            if(!response.isEmpty()) {
+                ListView listView = (ListView) getActivity().findViewById(R.id.schedule_bsl);
+                ArrayAdapter<Schedule> scheduleArrayAdapter =
+                        new ArrayAdapter<>(getContext(), R.layout.schedule_item, response);
 
-                TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
-                if (!bslAlert.trim().isEmpty() || !bslAdvisory.trim().isEmpty()) {
-                    bslAlertTextView.setText(bslAlert + bslAdvisory);
-                } else {
-                    bslAlertTextView.setText(getResources().getString(R.string.no_alerts));
-                }
-            }
-            else {
-                TextView bslAlertTextView = (TextView)getActivity().findViewById(R.id.alerts_bsl);
-                bslAlertTextView.setText(R.string.advisory_failed);
+                listView.setAdapter(scheduleArrayAdapter);
             }
 
             swipeContainer.setRefreshing(false);
@@ -135,7 +124,6 @@ public class BSLServiceAdvisoryFragment extends Fragment
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

@@ -1,7 +1,8 @@
 <RelativeLayout android:id="@+id/service_advisory"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"

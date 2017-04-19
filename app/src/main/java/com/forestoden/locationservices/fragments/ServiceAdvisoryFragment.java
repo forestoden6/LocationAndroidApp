@@ -54,9 +54,6 @@ public class ServiceAdvisoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
     }
 
 
@@ -105,7 +102,6 @@ public class ServiceAdvisoryFragment extends Fragment {
 
 
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

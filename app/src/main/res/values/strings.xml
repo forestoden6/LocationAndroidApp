@@ -67,4 +67,7 @@
     <string name="trip_tracking">Track Trips?</string>
     <string name="trip_tracking_summary">Enable/Disable Trip Tracking</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

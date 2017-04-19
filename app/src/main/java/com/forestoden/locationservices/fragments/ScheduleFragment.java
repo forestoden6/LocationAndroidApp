@@ -3,12 +3,15 @@ package com.forestoden.locationservices.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.model.SchedulePagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +51,39 @@ public class ScheduleFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_schedule, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.schedule_tab);
+        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.mfl)));
+        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.bsl)));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        final ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.schedule_pager);
+
+        final SchedulePagerAdapter schedulePagerAdapter =
+                new SchedulePagerAdapter(getFragmentManager());
+
+        viewPager.setAdapter(schedulePagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     @Override
