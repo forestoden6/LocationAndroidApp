@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.forestoden.locationservices.globals.Constants.StationIDMap;
 import static com.forestoden.locationservices.globals.Constants.StationMap;
@@ -81,7 +82,7 @@ public class GetTripsTask extends AsyncTask<String, Integer, ArrayList<Trip>> {
                             Station start = StationMap.get(StationIDMap.get(startID));
                             //Log.d(TAG, start.getName());
                             Station end = StationMap.get(StationIDMap.get(endID));
-                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                             Date startDate = dateFormat.parse((String)tripJsonObject.get("time_departure"));
                             Date endDate = dateFormat.parse((String)tripJsonObject.get("time_arrival"));
                             trips.add(new Trip(start, end, startDate, endDate, id));
