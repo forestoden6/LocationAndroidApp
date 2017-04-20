@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.fragments.HomeFragment;
+import com.forestoden.locationservices.fragments.MFLScheduleFragment;
 import com.forestoden.locationservices.fragments.Mapfragment;
 import com.forestoden.locationservices.fragments.PastTripsFragment;
 import com.forestoden.locationservices.fragments.PredictionFragment;
@@ -70,7 +71,6 @@ import static com.forestoden.locationservices.globals.Constants.STATIONS;
 import static com.forestoden.locationservices.globals.Constants.StationIDMap;
 import static com.forestoden.locationservices.globals.Constants.StationMap;
 import static com.forestoden.locationservices.globals.Constants.UDID;
-import static com.forestoden.locationservices.globals.Constants.stationUrl;
 
 public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener,
@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case 3:
                 try {
-                    fragment = ScheduleFragment.newInstance();
+                    fragment = MFLScheduleFragment.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -427,12 +427,14 @@ public class MainActivity extends AppCompatActivity implements
      * Adds to HashMap
      */
     protected void createGeofenceList() throws JSONException, MalformedURLException {
-        URL stationUrlObject = new URL(stationUrl);
+        //URL stationUrlObject = new URL(stationUrl);
+        //URL bsl = new URL("http://lowcost-env.r8dpz7s6b2.us-west-2.elasticbeanstalk.com/stations/bsl");
+        URL mfl = new URL("http://lowcost-env.r8dpz7s6b2.us-west-2.elasticbeanstalk.com/stations");
         //Creates a new thread to get stations asynchronously
         GetStationsTask stationConnection = new GetStationsTask();
         String stations = null;
         try {
-            stations = stationConnection.execute(stationUrlObject).get();
+            stations = stationConnection.execute(mfl).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -451,6 +453,11 @@ public class MainActivity extends AppCompatActivity implements
             if (stationJson.length() > 0) {
                 for (int i = 0; i < stationJson.length(); i++) {
                     JSONObject stationJsonObject = stationJson.getJSONObject(i);
+                    //String line = (String)stationJsonObject.get("line");
+                    /*if(line.contains("owl")){
+                        Log.d(TAG, "test");
+                        continue;
+                    }*/
                     String name = (String) stationJsonObject.get("name_long");
                     double latitude = Double.parseDouble((String) stationJsonObject.get("latitude"));
                     double longitude = Double.parseDouble((String) stationJsonObject.get("longitude"));

@@ -56,6 +56,12 @@
     <string name="mfl">Market-Frankford Line</string>
     <string name="bsl">Broad Street Line</string>
 
+    <!-- Schedules -->
+    <string name="origin">Origin</string>
+    <string name="destination">Destination</string>
+    <string name="invalid_station">Invalid Station</string>
+
+
     <!-- Service Advisory -->
     <string name="advisory_failed">Failed to get SEPTA Advisories</string>
     <string name="mfl_key">{\"key1\":\"mfl\"}</string>

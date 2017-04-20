@@ -1,18 +1,37 @@
-<android.support.v4.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scheduleSwipeContainer"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF">
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:padding="5sp">
+    <AutoCompleteTextView
+        android:id="@+id/origin_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5sp">
-        <ListView
-            android:id="@+id/schedule_mfl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            />
-    </RelativeLayout>
-</android.support.v4.widget.SwipeRefreshLayout>
+        android:hint="@string/origin"
+        android:layout_toLeftOf="@+id/schedule_button"
+        android:layout_toStartOf="@+id/schedule_button" />
+    <AutoCompleteTextView
+        android:id="@+id/destination_text"
+        android:layout_below="@id/origin_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/destination"
+        android:layout_toLeftOf="@+id/schedule_button"
+        android:layout_toStartOf="@+id/schedule_button" />
+    <ListView
+        android:id="@+id/schedule_mfl"
+        android:layout_below="@id/destination_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/schedule_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="13dp"
+        android:drawableLeft="@android:drawable/ic_menu_search" />
+</RelativeLayout>

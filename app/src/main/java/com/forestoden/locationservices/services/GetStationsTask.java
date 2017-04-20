@@ -41,19 +41,23 @@ public class GetStationsTask extends AsyncTask<URL, Integer, String> {
                     }
                 });
         //Use the URL passed to the method
-        GenericUrl genericStationURL = new GenericUrl(urls[0]);
-        HttpRequest request;
-        HttpResponse response;
-        String stations = null;
-        try {
-            //request = requestFactory.buildGetRequest(genericStation);
-            request = requestFactory.buildGetRequest(genericStationURL);
-            response = request.execute();
-            stations = response.parseAsString();
+        String stations = "";
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        for(URL url : urls) {
+            GenericUrl genericStationURL = new GenericUrl(url);
+            HttpRequest request;
+            HttpResponse response;
+            try {
+                //request = requestFactory.buildGetRequest(genericStation);
+                request = requestFactory.buildGetRequest(genericStationURL);
+                response = request.execute();
+                stations += response.parseAsString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
 
         return stations;
 

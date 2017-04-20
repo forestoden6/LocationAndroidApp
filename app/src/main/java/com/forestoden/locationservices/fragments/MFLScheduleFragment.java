@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.forestoden.locationservices.R;
@@ -17,6 +19,8 @@ import com.forestoden.locationservices.model.Schedule;
 import com.forestoden.locationservices.services.GetScheduleTask;
 
 import java.util.ArrayList;
+
+import static com.forestoden.locationservices.globals.Constants.StationMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,7 +58,7 @@ public class MFLScheduleFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new GetScheduleTask(this).execute(new Pair<>(181, 158));
+        //new GetScheduleTask(this).execute(new Pair<>(181, 158));
 
     }
 
@@ -67,23 +71,49 @@ public class MFLScheduleFragment extends Fragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.scheduleSwipeContainer);
+        ArrayList<String> stations = new ArrayList<>();
+
+        stations.addAll(StationMap.keySet());
+
+        //Log.d(TAG, StationIDMap.keySet().toString());
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, stations);
+        final AutoCompleteTextView originText = (AutoCompleteTextView)
+                getActivity().findViewById(R.id.origin_text);
+        originText.setAdapter(adapter);
+        final AutoCompleteTextView destinationText =
+                (AutoCompleteTextView) getActivity().findViewById(R.id.destination_text);
+        destinationText.setAdapter(adapter);
 
         final Fragment f = this;
 
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        Button searchSchedule = (Button) getActivity().findViewById(R.id.schedule_button);
+        searchSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRefresh() {
-                //Asynchronously get schedules and update text views
-                GetScheduleTask getScheduleTask = new GetScheduleTask(f);
-                getScheduleTask.execute(new Pair<>(181, 158));
+            public void onClick(View v) {
+                String origin = originText.getText().toString();
+                String destination = destinationText.getText().toString();
+                Integer originID = null;
+                Integer destinationID = null;
+                if (StationMap.get(origin) != null && StationMap.get(destination) != null) {
+                    originID = StationMap.get(origin).getID();
+                    destinationID = StationMap.get(destination).getID();
+
+                    new GetScheduleTask(f).execute(new Pair<>(originID, destinationID));
+
+                } else {
+                    if(StationMap.get(origin) == null) {
+                        originText.setError(getResources().getString(R.string.invalid_station));
+                    }
+                    if(StationMap.get(destination) == null) {
+                        destinationText.setError(getResources().getString(R.string.invalid_station));
+                    }
+                }
+
             }
         });
 
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
     }
 
     @Override
@@ -107,8 +137,6 @@ public class MFLScheduleFragment extends Fragment
 
                 listView.setAdapter(scheduleArrayAdapter);
             }
-
-            swipeContainer.setRefreshing(false);
         }
     }
 
