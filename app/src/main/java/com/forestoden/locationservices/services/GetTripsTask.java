@@ -23,6 +23,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
@@ -95,6 +96,8 @@ public class GetTripsTask extends AsyncTask<String, Integer, ArrayList<Trip>> {
                 Log.e(TAG, "Failed to parse Trip JSON");
             }
         }
+        Collections.reverse(trips);
+
         return trips;
     }
 
