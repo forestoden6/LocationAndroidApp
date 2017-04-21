@@ -75,7 +75,8 @@ public class MFLScheduleFragment extends Fragment
 
         stations.addAll(StationMap.keySet());
 
-        //Log.d(TAG, StationIDMap.keySet().toString());
+        /*Log.d(TAG, String.valueOf(StationMap.keySet().size()));
+        Log.d(TAG, String.valueOf(StationIDMap.keySet().size()));*/
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, stations);
