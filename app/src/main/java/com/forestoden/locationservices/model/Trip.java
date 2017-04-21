@@ -40,7 +40,6 @@ public class Trip {
         return newTrip;
     }
 
-    //TODO: Decide on how to store dates
     //Probably change how times are stored
     public void setStart(Station station, Date date, Context mContext) {
         start = station;

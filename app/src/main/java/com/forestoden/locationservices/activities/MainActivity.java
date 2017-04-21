@@ -69,7 +69,6 @@ import java.util.concurrent.ExecutionException;
 
 import static com.forestoden.locationservices.globals.Constants.STATIONS;
 import static com.forestoden.locationservices.globals.Constants.StationIDMap;
-import static com.forestoden.locationservices.globals.Constants.StationMap;
 import static com.forestoden.locationservices.globals.Constants.UDID;
 
 public class MainActivity extends AppCompatActivity implements
@@ -466,8 +465,8 @@ public class MainActivity extends AppCompatActivity implements
                     String line = stationJsonObject.getString("line");
                     Station station = new Station(id, name, address, new LatLng(latitude, longitude), line);
                     STATIONS.add(station);
-                    StationMap.put(name, station);
-                    StationIDMap.put(id, name);
+                    //StationMap.put(name, station);
+                    StationIDMap.put(id, station);
                 }
             } else {
                 Log.e(TAG, "Empty JSON returned by server");
@@ -483,7 +482,7 @@ public class MainActivity extends AppCompatActivity implements
         //NOTE: Geofences will not be activated here
         for (Station station : STATIONS) {
             mGeofenceList.add(new Geofence.Builder()
-                    .setRequestId(station.getName())
+                    .setRequestId(String.valueOf(station.getID()))
                     .setCircularRegion(
                             station.getLatLng().latitude,
                             station.getLatLng().longitude,

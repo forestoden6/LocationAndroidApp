@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import static com.forestoden.locationservices.globals.Constants.StationIDMap;
-import static com.forestoden.locationservices.globals.Constants.StationMap;
 
 /**
  * Created by ForestOden on 3/5/2017.
@@ -79,9 +78,11 @@ public class GetTripsTask extends AsyncTask<String, Integer, ArrayList<Trip>> {
                             int id = Integer.parseInt((String) tripJsonObject.get("id_trip"));
                             int startID = Integer.parseInt((String) tripJsonObject.get("id_station_origin"));
                             int endID = Integer.parseInt((String) tripJsonObject.get("id_station_destination"));
-                            Station start = StationMap.get(StationIDMap.get(startID));
+                            //Station start = StationMap.get(StationIDMap.get(startID));
                             //Log.d(TAG, start.getName());
-                            Station end = StationMap.get(StationIDMap.get(endID));
+                            //Station end = StationMap.get(StationIDMap.get(endID));
+                            Station start = StationIDMap.get(startID);
+                            Station end = StationIDMap.get(endID);
                             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                             Date startDate = dateFormat.parse((String)tripJsonObject.get("time_departure"));
                             Date endDate = dateFormat.parse((String)tripJsonObject.get("time_arrival"));

@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
-import static com.forestoden.locationservices.globals.Constants.StationMap;
+import static com.forestoden.locationservices.globals.Constants.StationIDMap;
 import static com.forestoden.locationservices.globals.Constants.TRIP_TIMEOUT;
 
 /**
@@ -83,10 +83,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
      * @return String value with enter/exit info and Geofence request ID (station name)
      */
     private String getGeofenceTransitionDetails(GeofencingEvent event) {
-        /*
-        TODO: Clean up method. Deal with Entry and Exit separately. No need for return here
-        TODO: Method can be void and will be called from onHandleIntent
-        */
+
         if(event.hasError()){
             Log.e(TAG, "Error");
             Log.e(TAG, String.valueOf(event.getErrorCode()));
@@ -101,7 +98,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
          * returned by getTriggeringGeofences()
          */
         for(Geofence geofence : event.getTriggeringGeofences()) {
-            triggeringIDs.add(geofence.getRequestId());
+            triggeringIDs.add(StationIDMap.get(Integer.valueOf(geofence.getRequestId())).getName());
             if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
                 addToTrip(geofence);
             }
@@ -130,7 +127,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
     private void addToTrip(Geofence geofence) {
         Date currentTime = new Date();
         if(trip.isNewTrip()) {
-            trip.setStart(StationMap.get(geofence.getRequestId()), currentTime, getApplicationContext());
+            trip.setStart(StationIDMap.get(Integer.valueOf(geofence.getRequestId())), currentTime, getApplicationContext());
             SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Start",
                     Context.MODE_PRIVATE);
             Log.i(TAG, "SHARED PREF " + sharedPref.getString("Station", "null"));
@@ -146,13 +143,13 @@ public class GeofenceTransitionsIntentService extends IntentService {
             //If time between geofences > TRIP_TIMEOUT, this will not accurately read
             Log.d(TAG, "TEST");
             if(trip.getEnd() == null) {
-                trip.setEnd(StationMap.get(geofence.getRequestId()), currentTime);
+                trip.setEnd(StationIDMap.get(Integer.valueOf(geofence.getRequestId())), currentTime);
                 tripTimer.schedule(tripTimerTask, TRIP_TIMEOUT);
             }
             else if(//tripTimerTask.cancel() &&
                     !geofence.getRequestId().equals(trip.getStart().getName())) {
                 Log.d(TAG, "Added to trip");
-                trip.setEnd(StationMap.get(geofence.getRequestId()), currentTime);
+                trip.setEnd(StationIDMap.get(Integer.valueOf(geofence.getRequestId())), currentTime);
                 //Seems like the timer isn't being cancelled
                 tripTimerTask.cancel();
                 //Don't know if this must be cancelled, as the new call to schedule() might reset

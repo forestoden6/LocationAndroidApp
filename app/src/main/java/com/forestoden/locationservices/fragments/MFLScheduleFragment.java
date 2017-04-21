@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,12 @@ import android.widget.ListView;
 
 import com.forestoden.locationservices.R;
 import com.forestoden.locationservices.model.Schedule;
+import com.forestoden.locationservices.model.Station;
 import com.forestoden.locationservices.services.GetScheduleTask;
 
 import java.util.ArrayList;
 
-import static com.forestoden.locationservices.globals.Constants.StationMap;
+import static com.forestoden.locationservices.globals.Constants.StationIDMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,14 +73,20 @@ public class MFLScheduleFragment extends Fragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        ArrayList<String> stations = new ArrayList<>();
+        ArrayList<Station> stations = new ArrayList<>();
+        ArrayList<String> stationNames = new ArrayList<>();
 
-        stations.addAll(StationMap.keySet());
+
+        stations.addAll(StationIDMap.values());
+
+        for(Station s : stations) {
+            stationNames.add(s.getName());
+        }
 
         /*Log.d(TAG, String.valueOf(StationMap.keySet().size()));
         Log.d(TAG, String.valueOf(StationIDMap.keySet().size()));*/
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+        final ArrayAdapter<Station> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, stations);
         final AutoCompleteTextView originText = (AutoCompleteTextView)
                 getActivity().findViewById(R.id.origin_text);
@@ -95,9 +103,9 @@ public class MFLScheduleFragment extends Fragment
             public void onClick(View v) {
                 String origin = originText.getText().toString();
                 String destination = destinationText.getText().toString();
-                Integer originID = null;
-                Integer destinationID = null;
-                if (StationMap.get(origin) != null && StationMap.get(destination) != null) {
+                Integer originID = isValidStation(origin);
+                Integer destinationID = isValidStation(destination);
+                /*if (StationMap.get(origin) != null && StationMap.get(destination) != null) {
                     originID = StationMap.get(origin).getID();
                     destinationID = StationMap.get(destination).getID();
 
@@ -110,11 +118,33 @@ public class MFLScheduleFragment extends Fragment
                     if(StationMap.get(destination) == null) {
                         destinationText.setError(getResources().getString(R.string.invalid_station));
                     }
+                }*/
+
+                if(originID > 0 && destinationID > 0) {
+                    Log.d(TAG, String.valueOf(originID) + " " + String.valueOf(destinationID));
+                    new GetScheduleTask(f).execute(new Pair<>(originID, destinationID));
+                } else {
+                    if(originID == -1) {
+                        originText.setError(getResources().getString(R.string.invalid_station));
+                    }
+                    if(destinationID == -1) {
+                        destinationText.setError(getResources().getString(R.string.invalid_station));
+                    }
                 }
 
             }
         });
 
+    }
+
+    private int isValidStation(String input) {
+        for(Station s : StationIDMap.values()) {
+            if (s.toString().equals(input)) {
+                return s.getID();
+            }
+        }
+
+        return -1;
     }
 
     @Override

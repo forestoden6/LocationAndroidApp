@@ -101,7 +101,7 @@ public class GeofencesOnBootService extends BroadcastReceiver implements
                     Station station = new Station(id, name, address, new LatLng(latitude, longitude), line);
                     STATIONS.add(station);
                     StationMap.put(name, station);
-                    StationIDMap.put(id, name);
+                    StationIDMap.put(id, station);
                 }
             } else {
                 Log.e(TAG, "Empty JSON returned by server");

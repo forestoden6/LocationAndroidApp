@@ -44,4 +44,8 @@ public class Station {
         return line;
     }
 
+    @Override
+    public String toString() {
+        return name + '\n' + address;
+    }
 }
