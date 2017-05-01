@@ -17,6 +17,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.forestoden.locationservices.globals.Constants.UDID;
@@ -55,13 +56,19 @@ public class SaveCompletedTripTask extends AsyncTask<Trip, Integer, String> {
                 Station originStation = t.getStart();
                 int origin = originStation.getID();
                 Date departDate = t.getStartTime();
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
                 String depart = dateFormat.format(departDate);
                 Station destinationStation = t.getEnd();
                 int destination = destinationStation.getID();
                 Date arriveDate = t.getEndTime();
                 String arrive = dateFormat.format(arriveDate);
+
+                Calendar c = Calendar.getInstance();
+                c.setTime(departDate);
+                int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+
                 String s = "udid=" + UDID +
+                           "&weekday=" + String.valueOf(dayOfWeek) +
                            "&origin=" + String.valueOf(origin) +
                            "&depart=" + depart +
                            "&destination=" + String.valueOf(destination) +

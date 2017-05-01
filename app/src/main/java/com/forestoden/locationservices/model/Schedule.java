@@ -26,9 +26,7 @@ public class Schedule {
 
     @Override
     public String toString() {
-        return "Schedule{" +
-                "departure='" + departure + '\'' +
-                ", arrival='" + arrival + '\'' +
-                '}';
+        return "Departure: " + departure +
+                ", Arrival: " + arrival;
     }
 }
