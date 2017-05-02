@@ -56,7 +56,7 @@ public class SaveCompletedTripTask extends AsyncTask<Trip, Integer, String> {
                 Station originStation = t.getStart();
                 int origin = originStation.getID();
                 Date departDate = t.getStartTime();
-                DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
                 String depart = dateFormat.format(departDate);
                 Station destinationStation = t.getEnd();
                 int destination = destinationStation.getID();
