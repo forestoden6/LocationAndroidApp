@@ -35,7 +35,7 @@ public class Constants {
 
     private static final int MS_PER_SECOND = 1000;
     private static final int SECONDS_PER_MINUTE = 60 * MS_PER_SECOND;
-    public static final int TRIP_TIMEOUT = 15 * SECONDS_PER_MINUTE;
+    public static final int TRIP_TIMEOUT = 1 * SECONDS_PER_MINUTE;
 
     public static String UDID;
 

@@ -84,7 +84,7 @@ public class GetTripsTask extends AsyncTask<String, Integer, ArrayList<Trip>> {
                             //Station end = StationMap.get(StationIDMap.get(endID));
                             Station start = StationIDMap.get(startID);
                             Station end = StationIDMap.get(endID);
-                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+                            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
                             Date startDate = dateFormat.parse((String)tripJsonObject.get("time_departure"));
                             Date endDate = dateFormat.parse((String)tripJsonObject.get("time_arrival"));
                             trips.add(new Trip(start, end, startDate, endDate, id));
