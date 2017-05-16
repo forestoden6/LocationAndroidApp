@@ -225,17 +225,6 @@ public class MainActivity extends AppCompatActivity implements
                 mActivityTitle = this.getString(R.string.home);
                 break;
             case 1:
-                try {
-                    fragment = PredictionFragment.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
-                        .commit();
-
-                mActivityTitle = this.getString(R.string.prediction);
-                break;
-            case 2:
                 Mapfragment mapfragment = null;
                 try {
                     mapfragment = Mapfragment.newInstance();
@@ -287,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 //Toast.makeText(MainActivity.this, "This should be a map!", Toast.LENGTH_SHORT).show();
                 break;
-            case 3:
+            case 2:
                 try {
                     fragment = MFLScheduleFragment.newInstance();
                 } catch (Exception e) {
@@ -303,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 mActivityTitle = this.getString(R.string.schedule);
                 break;
-            case 4:
+            case 3:
                 try {
                     fragment = ServiceAdvisoryFragment.newInstance();
                 } catch (Exception e) {
@@ -319,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 mActivityTitle = this.getString(R.string.service_advisories);
                 break;
-            case 5:
+            case 4:
                 try {
                     fragment = PastTripsFragment.newInstance();
                 } catch (Exception e) {
@@ -335,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 mActivityTitle = this.getString(R.string.past_trips);
                 break;
-            case 6:
+            case 5:
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new SettingsFragment())
                         .commit();

@@ -1,6 +1,9 @@
 package com.forestoden.locationservices.fragments;
 
 import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import static android.content.Context.LOCATION_SERVICE;
 import static com.forestoden.locationservices.globals.Constants.UDID;
 
 /**
@@ -85,8 +90,22 @@ public class HomeFragment extends Fragment
                              Bundle savedInstanceState) {
 
         //GetPrediction
-        double lat = 39.957167;
-        double lon = -75.201836;
+        Criteria criteria = new Criteria();
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(criteria, true);
+        double lat = 45;
+        double lon = -70;
+        Location location = null;
+        try {
+            location = locationManager.getLastKnownLocation(provider);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+        lat = location.getLatitude();
+        lon = location.getLongitude();
+
+        //Log.d(TAG, lat + " " + lon);
 
         Date date = new Date();
         Calendar c = Calendar.getInstance();
@@ -194,8 +213,23 @@ public class HomeFragment extends Fragment
             @Override
             public void onRefresh() {
                 //GetPrediction
-                double lat = 39.957167;
-                double lon = -75.201836;
+                Criteria criteria = new Criteria();
+                LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+                String provider = locationManager.getBestProvider(criteria, true);
+
+                double lat = 45;
+                double lon = -70;
+                Location location = null;
+                try {
+                    location = locationManager.getLastKnownLocation(provider);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+
+                lat = location.getLatitude();
+                lon = location.getLongitude();
+
+                Log.d(TAG, lat + " " + lon);
 
                 Date date = new Date();
                 Calendar c = Calendar.getInstance();

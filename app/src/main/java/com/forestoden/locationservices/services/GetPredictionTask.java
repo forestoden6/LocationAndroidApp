@@ -2,7 +2,6 @@ package com.forestoden.locationservices.services;
 
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.forestoden.locationservices.model.Prediction;
 import com.forestoden.locationservices.model.PredictionRequest;
@@ -98,7 +97,7 @@ public class GetPredictionTask extends AsyncTask<PredictionRequest, Integer, Pre
                         ByteArrayContent.fromString(null, requestJSON));
                 response = request.execute();
                 responseString = response.parseAsString();
-                Log.d(TAG, responseString);
+                //Log.d(TAG, responseString);
             } catch (IOException e) {
                 e.printStackTrace();
             }

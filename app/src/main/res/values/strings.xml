@@ -27,7 +27,6 @@
     <!-- Nav Drawer (examples for now)-->
     <string-array name="nav_options">
         <item>Home</item>
-        <item>Prediction</item>
         <item>Map</item>
         <item>Schedule</item>
         <item>Advisories</item>

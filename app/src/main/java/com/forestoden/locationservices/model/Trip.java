@@ -3,6 +3,7 @@ package com.forestoden.locationservices.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -99,10 +100,12 @@ public class Trip {
 
     @Override
     public String toString() {
+        SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm:ss");
+
         String tripString = getStart().getName() + " " +
-                getStartTime().toString() + " \n" +
+                localDateFormat.format(getStartTime()) + " \n" +
                 getEnd().getName() + " " +
-                getEndTime().toString();
+                localDateFormat.format(getEndTime());
         return tripString;
     }
 
