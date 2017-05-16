@@ -1,0 +1,50 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/trip_preferences">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="track_trip"
+            android:title="@string/trip_tracking"
+            android:summary="@string/trip_tracking_summary" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="App Settings">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="wifi_sync"
+            android:title="Sync Only on WiFi"
+            android:summary="Sync Septa and trip data only when connected to WiFi." />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="User Settings">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="remove_data"
+            android:title="Remove Data"
+            android:summary="Delete all trip information from the database." />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="remove_user"
+            android:title="Delete User"
+            android:summary="Delete all user data from the database, including user's account." />
+
+    </PreferenceCategory>
+
+    <!--Notification settings (options?)
+    Personaliztion -> add home/work
+    About
+    Share the App
+    Terms & Conditions
+    Privacy Notice-->
+
+</PreferenceScreen>
