@@ -124,8 +124,8 @@ public class HomeFragment extends Fragment
         
         View inflatedView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        CardView predictionCard = (CardView) inflatedView.findViewById(R.id.prediction_card);
-        predictionCard.setOnClickListener(new View.OnClickListener() {
+        //CardView predictionCard = (CardView) inflatedView.findViewById(R.id.prediction_card);
+        /*predictionCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Fragment fragment = new PredictionFragment();
@@ -145,7 +145,7 @@ public class HomeFragment extends Fragment
                 mActionBar.setTitle(getResources().getString(R.string.prediction));
                 mActionBar.setDisplayHomeAsUpEnabled(true);
             }
-        });
+        });*/
 
         CardView alertsCard = (CardView) inflatedView.findViewById(R.id.alerts_card);
         alertsCard.setOnClickListener(new View.OnClickListener() {
