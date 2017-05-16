@@ -17,11 +17,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.forestoden.locationservices.R;
+import com.forestoden.locationservices.model.Prediction;
+import com.forestoden.locationservices.model.PredictionRequest;
 import com.forestoden.locationservices.model.Trip;
 import com.forestoden.locationservices.services.GetAlertsTask;
+import com.forestoden.locationservices.services.GetPredictionTask;
 import com.forestoden.locationservices.services.GetTripsTask;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.forestoden.locationservices.globals.Constants.UDID;
 
@@ -35,7 +42,8 @@ import static com.forestoden.locationservices.globals.Constants.UDID;
  */
 public class HomeFragment extends Fragment
     implements GetAlertsTask.OnAsyncRequestComplete ,
-    GetTripsTask.OnAsyncRequestComplete {
+    GetTripsTask.OnAsyncRequestComplete,
+    GetPredictionTask.OnAsyncRequestComplete {
 
     private static final String TAG = HomeFragment.class.getName();
 
@@ -76,8 +84,23 @@ public class HomeFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //GetPrediction
+        double lat = 39.957167;
+        double lon = -75.201836;
+
+        Date date = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        String now = dateFormat.format(date);
+
+        PredictionRequest request = new PredictionRequest(lat, lon, UDID, now, dayOfWeek);
+        new GetPredictionTask(this).execute(request);
+        //Get Alerts
         new GetAlertsTask(this).execute(getResources().getString(R.string.mfl_key),
                 getResources().getString(R.string.bsl_key));
+        //Get Past Trips
         new GetTripsTask(this).execute("udid="+UDID);
         
         View inflatedView = inflater.inflate(R.layout.fragment_home, container, false);
@@ -170,6 +193,19 @@ public class HomeFragment extends Fragment
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                //GetPrediction
+                double lat = 39.957167;
+                double lon = -75.201836;
+
+                Date date = new Date();
+                Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                String now = dateFormat.format(date);
+
+                PredictionRequest request = new PredictionRequest(lat, lon, UDID, now, dayOfWeek);
+                new GetPredictionTask(f).execute(request);
                 //Asynchronously get service alerts and update text views
                 GetAlertsTask getAlertsTask = new GetAlertsTask(f);
                 getAlertsTask.execute(getResources().getString(R.string.mfl_key),
@@ -243,6 +279,28 @@ public class HomeFragment extends Fragment
                 TextView tripTextView = (TextView)getActivity().findViewById(R.id.past_trips);
                 tripTextView.setText(tripString);
             }
+            swipeContainer.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void asyncResponse(Prediction prediction) {
+        if(this.isVisible()) {
+            if(prediction != null) {
+                TextView predictionTextView = (TextView)getActivity().findViewById(R.id.prediction);
+                predictionTextView.setText("Prediction: " + prediction.getDestinationStation().getName());
+
+                TextView predictionNearest = (TextView)getActivity().findViewById(R.id.prediction_nearest);
+                predictionNearest.setText("Nearest station: " + prediction.getNearestStation().getName());
+
+                TextView predictionNextTrain = (TextView)getActivity().findViewById(R.id.prediction_next_train);
+                predictionNextTrain.setText("Next train arrives at " + prediction.getNextTrain());
+
+                TextView predictionETA = (TextView)getActivity().findViewById(R.id.prediction_eta);
+                predictionETA.setText("Your estimated time of arrival is " + prediction.getEta());
+
+            }
+
             swipeContainer.setRefreshing(false);
         }
     }
