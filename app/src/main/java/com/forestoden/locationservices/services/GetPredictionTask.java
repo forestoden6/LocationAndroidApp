@@ -102,7 +102,13 @@ public class GetPredictionTask extends AsyncTask<PredictionRequest, Integer, Pre
                 e.printStackTrace();
             }
             //create prediction
-            Station predictedStation = StationIDMap.get(Integer.valueOf(responseString));
+            Station predictedStation = null;
+            try {
+                predictedStation = StationIDMap.get(Integer.valueOf(responseString));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                return null;
+            }
 
             //get schedules from here to there
             Schedule latestSchedule = getNextSchedule(nearestStation, predictedStation.getID());
