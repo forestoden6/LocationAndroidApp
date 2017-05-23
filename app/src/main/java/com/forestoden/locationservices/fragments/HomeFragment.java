@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment
         Location location = null;
         int permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
 
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             try {
                 if (provider != null) {
                     location = locationManager.getLastKnownLocation(provider);
@@ -109,14 +109,15 @@ public class HomeFragment extends Fragment
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
-
             if(location != null) {
                 lat = location.getLatitude();
                 lon = location.getLongitude();
             }
         }
 
-        //Log.d(TAG, lat + " " + lon);
+
+
+        Log.d(TAG, lat + " " + lon);
 
         Date date = new Date();
         Calendar c = Calendar.getInstance();
