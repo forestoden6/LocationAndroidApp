@@ -1,6 +1,8 @@
 package com.forestoden.locationservices.fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -96,14 +99,22 @@ public class HomeFragment extends Fragment
         double lat = 45;
         double lon = -70;
         Location location = null;
-        try {
-            location = locationManager.getLastKnownLocation(provider);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
+        int permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
 
-        lat = location.getLatitude();
-        lon = location.getLongitude();
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            try {
+                if (provider != null) {
+                    location = locationManager.getLastKnownLocation(provider);
+                }
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+
+            if(location != null) {
+                lat = location.getLatitude();
+                lon = location.getLongitude();
+            }
+        }
 
         //Log.d(TAG, lat + " " + lon);
 

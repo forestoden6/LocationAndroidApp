@@ -100,7 +100,7 @@ public class Trip {
 
     @Override
     public String toString() {
-        SimpleDateFormat localDateFormat = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat localDateFormat = new SimpleDateFormat("h:mm:ss a");
 
         String tripString = getStart().getName() + " " +
                 localDateFormat.format(getStartTime()) + " \n" +
